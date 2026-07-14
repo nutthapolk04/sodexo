@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 <x-dc>
@@ -85,7 +87,16 @@
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
         <button style="{{ ghostBtn }}" onClick="{{ onNotify }}" title="Alerts">{{ I.bell }}<span style="{{ alertDotStyle }}"></span></button>
-        <button style="{{ exportBtnStyle }}" onClick="{{ onExport }}">{{ I.download }}<span>{{ L.export }}</span></button>
+        <div style="position:relative">
+          <button style="{{ exportBtnStyle }}" onClick="{{ onExport }}">{{ I.download }}<span>{{ L.export }}</span>{{ I.exportChevron }}</button>
+          <sc-if value="{{ exportMenu }}">
+            <div style="{{ exportDropStyle }}">
+              <button style="{{ exportItemStyle }}" onClick="{{ onExportXlsx }}">{{ I.xlsxIcon }}<span>Excel (.xlsx)</span></button>
+              <button style="{{ exportItemStyle }}" onClick="{{ onExportPdf }}">{{ I.pdfIcon }}<span>PDF (.pdf)</span></button>
+              <button style="{{ exportItemStyleLast }}" onClick="{{ onExportPrint }}">{{ I.printIcon }}<span>Print / PDF</span></button>
+            </div>
+          </sc-if>
+        </div>
       </div>
     </header>
 
@@ -696,7 +707,7 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;brandName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sodexo Thailand&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;flagThresholdPct&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.5,&quot;min&quot;:0.5,&quot;max&quot;:5,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Reconciliation&quot;}}">
 class Component extends DCLogic {
   state = {
-    page:'overview', theme:'light', lang:'en', vw:1280, branchFilter:'all', branchQuery:'', brselQuery:'', period:'jul2026',
+    page:'overview', theme:'light', lang:'en', vw:1280, branchFilter:'all', branchQuery:'', brselQuery:'', period:'jul2026', exportMenu:false,
     channels:{creditdebit:true,cash:true,promptpay:true,member:true,truemoney:true,roomservice:true,maemanee:true,coupon:true},
     openMenu:null, trendMode:'monthly', heatBranch:'bumrungrad', drill:null, selectedBranch:'bumrungrad', toast:null, trendHover:null
   };
@@ -1011,19 +1022,62 @@ class Component extends DCLogic {
     return rows;
   }
 
-  _dlXLSX(filename,rows,sheetName){
-    const ws=XLSX.utils.aoa_to_sheet(rows);
-    /* auto column width */
-    ws['!cols']=rows[0].map((_,ci)=>({wch:Math.max(...rows.map(r=>(''+r[ci]).length),10)+2}));
-    /* header style */
-    const range=XLSX.utils.decode_range(ws['!ref']);
-    for(let C=range.s.c;C<=range.e.c;C++){
-      const cell=XLSX.utils.encode_cell({r:0,c:C});
-      if(ws[cell]) ws[cell].s={font:{bold:true},fill:{fgColor:{rgb:'275267'}},font:{color:{rgb:'FFFFFF'},bold:true}};
+  _reportMeta(pg){
+    const now=new Date();
+    const pad=n=>String(n).padStart(2,'0');
+    const ts=pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+    const titles={daily:'Daily Sales Report',hourly:'Hourly Sales Report',weekly:'Weekly Sales Report',monthly:'Monthly Sales Report'};
+    return {title:titles[pg]||'Sales Report',branch:'Paolo Hospital Rangsit · Branch 664TH240000',generated:'Generated: '+ts};
+  }
+  _dlXLSX(filename,rows,sheetName,meta){
+    const m=meta||{};
+    const allRows=m.title?[[m.title],[m.branch||''],[m.generated||''],[],[...rows[0]],...rows.slice(1)]:rows;
+    const ws=XLSX.utils.aoa_to_sheet(allRows);
+    const colCount=rows[0].length;
+    ws['!cols']=rows[0].map((_,ci)=>({wch:Math.max(...rows.map(r=>(''+r[ci]).length),12)+2}));
+    if(m.title){
+      /* merge title across all columns */
+      ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:colCount-1}},{s:{r:1,c:0},e:{r:1,c:colCount-1}},{s:{r:2,c:0},e:{r:2,c:colCount-1}}];
+      /* style title rows */
+      ['A1','A2','A3'].forEach((addr,i)=>{
+        if(!ws[addr]) ws[addr]={v:'',t:'s'};
+        ws[addr].s={font:{bold:i===0,sz:i===0?14:10,color:{rgb:i===0?'275267':'666666'}},alignment:{horizontal:'left'}};
+      });
+      /* style header row (row index 4, 0-based) */
+      for(let C=0;C<colCount;C++){
+        const cell=XLSX.utils.encode_cell({r:4,c:C});
+        if(!ws[cell]) ws[cell]={v:rows[0][C],t:'s'};
+        ws[cell].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'275267'}},alignment:{horizontal:'center'}};
+      }
     }
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,sheetName||'Report');
     XLSX.writeFile(wb,filename);
+  }
+  _dlPDF(filename,rows,meta){
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const m=meta||{};
+    /* header */
+    doc.setFillColor(39,82,103);
+    doc.rect(0,0,297,28,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(16); doc.setFont(undefined,'bold');
+    doc.text(m.title||'Sales Report',14,11);
+    doc.setFontSize(9); doc.setFont(undefined,'normal');
+    doc.text((m.branch||''),14,18);
+    doc.text((m.generated||''),14,24);
+    /* table */
+    doc.autoTable({
+      head:[rows[0]],
+      body:rows.slice(1),
+      startY:32,
+      styles:{fontSize:9,cellPadding:3},
+      headStyles:{fillColor:[39,82,103],textColor:255,fontStyle:'bold'},
+      alternateRowStyles:{fillColor:[242,241,234]},
+      margin:{left:14,right:14}
+    });
+    doc.save(filename);
   }
   openMenuFn(n){ this.setState(s=>({openMenu:s.openMenu===n?null:n})); }
   toast(msg){ this.setState({toast:msg}); clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({toast:null}),2800); }
@@ -1068,35 +1122,40 @@ class Component extends DCLogic {
     V.headerStyle={display:'flex',alignItems:'center',justifyContent:'space-between',gap:16,padding:'16px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-bg2)',flexShrink:0};
     V.ghostBtn={position:'relative',width:38,height:38,borderRadius:10,border:'1px solid var(--app-border)',background:'var(--app-card)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'var(--app-ink2)'};
     V.alertDotStyle={position:'absolute',top:9,right:10,width:7,height:7,borderRadius:999,background:c.red,border:'2px solid var(--app-card)'};
-    V.exportBtnStyle={display:'inline-flex',alignItems:'center',gap:8,height:38,padding:'0 16px',borderRadius:10,border:'none',background:c.navy,color:'#fff',fontWeight:600,fontSize:13.5,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'};
-    V.onExport=()=>{
+    V.exportBtnStyle={display:'inline-flex',alignItems:'center',gap:8,height:38,padding:'0 14px',borderRadius:10,border:'none',background:c.navy,color:'#fff',fontWeight:600,fontSize:13.5,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'};
+    V.exportDropStyle={position:'absolute',top:'calc(100% + 6px)',right:0,minWidth:180,background:c.card,border:'1px solid '+c.border,borderRadius:12,boxShadow:'0 12px 30px rgba(0,0,0,.14)',padding:6,zIndex:50,display:'flex',flexDirection:'column',gap:2};
+    const expItem=(last)=>({display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:8,border:'none',cursor:'pointer',fontSize:13,fontFamily:'inherit',background:'transparent',color:c.ink,fontWeight:500,...(last?{}:{borderBottom:'none'})});
+    V.exportItemStyle=expItem(false); V.exportItemStyleLast=expItem(true);
+    V.onExportXlsx=()=>V.onExportFormat('xlsx');
+    V.onExportPdf=()=>V.onExportFormat('pdf');
+    V.onExportPrint=()=>{ this.setState({exportMenu:false}); window.print(); };
+    I.exportChevron=this.icon('chevron-down',13,'#fff');
+    I.xlsxIcon=this.icon('download',15,c.teal);
+    I.pdfIcon=this.icon('download',15,c.red);
+    I.printIcon=this.icon('download',15,c.ink2);
+    V.onExport=()=>this.setState(s=>({exportMenu:!s.exportMenu,openMenu:null}));
+    V.exportMenu=st.exportMenu;
+    V.onExportFormat=(fmt)=>{
+      this.setState({exportMenu:false});
       const pg=st.page;
+      const meta=this._reportMeta(pg);
+      let rows=null;
       if(pg==='daily'){
-        const rows=[['Date','Revenue (THB)','Transactions','Items','Avg Ticket (THB)','PromptPay','Room Service','Mae Manee','Coupon']];
-        Object.entries(this._REAL.daily).forEach(([day,v])=>{
-          const pay=this._REAL.payDaily[day]||{};
-          rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);
-        });
-        this._dlXLSX('daily-report-jul2026.xlsx',rows,'Daily');
-        this.toast('Excel downloaded — daily-report-jul2026.xlsx');
+        rows=[['Date','Revenue (THB)','Transactions','Items','Avg Ticket (THB)','PromptPay','Room Service','Mae Manee','Coupon']];
+        Object.entries(this._REAL.daily).forEach(([day,v])=>{const pay=this._REAL.payDaily[day]||{}; rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);});
       } else if(pg==='hourly'){
-        const rows=[['Hour','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        rows=[['Hour','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         Object.entries(this._REAL.hourly).forEach(([h,v])=>rows.push([h+':00',v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
-        this._dlXLSX('hourly-report-jul2026.xlsx',rows,'Hourly');
-        this.toast('Excel downloaded — hourly-report-jul2026.xlsx');
       } else if(pg==='weekly'){
-        const rows=[['Week','Period','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        rows=[['Week','Period','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         Object.entries(this._REAL.weekly).forEach(([w,v])=>rows.push([w,v.label,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
-        this._dlXLSX('weekly-report-jul2026.xlsx',rows,'Weekly');
-        this.toast('Excel downloaded — weekly-report-jul2026.xlsx');
       } else if(pg==='monthly'){
-        const rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         [{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:186373,tx:1800,qty:4679}].forEach(m=>rows.push([m.label,m.revenue,m.tx,m.qty,Math.round(m.revenue/m.tx)]));
-        this._dlXLSX('monthly-report-2026.xlsx',rows,'Monthly');
-        this.toast('Excel downloaded — monthly-report-2026.xlsx');
-      } else {
-        window.print();
       }
+      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta); this.toast('PDF downloaded — '+meta.title); }
+      else if(fmt==='xlsx' && rows){ this._dlXLSX(meta.title.replace(/\s+/g,'-').toLowerCase()+'.xlsx',rows,pg.charAt(0).toUpperCase()+pg.slice(1),meta); this.toast('Excel downloaded — '+meta.title); }
+      else { window.print(); }
     };
     V.onNotify=()=>this.toast(L.notifyToast);
 
