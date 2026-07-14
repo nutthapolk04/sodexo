@@ -1302,24 +1302,49 @@ class Component extends DCLogic {
     const scalePay=(pay)=>{ const o={}; Object.entries(pay).forEach(([k,v])=>o[k]=Math.round(v*rScale)); return o; };
 
     if(V.isDaily){
-      const days=Object.entries(this._REAL.daily).map(([k,v])=>([k,{revenue:scaleD(v.revenue),tx:scaleD(v.tx),qty:scaleD(v.qty)}]));
+      let days;
+      if(!rBranch||rBranch.id==='paolo'){
+        days=Object.entries(this._REAL.daily).map(([k,v])=>([k,{revenue:v.revenue,tx:v.tx,qty:v.qty}]));
+      } else {
+        days=rBranch.daily.map(d=>{
+          const key=String(d.day).padStart(2,'0')+'/07';
+          const tx=Math.round(d.value/rBranch.avgTicket);
+          return [key,{revenue:d.value,tx,qty:Math.round(tx*2.35)}];
+        });
+      }
+      const payDays=days.map(([k])=>scalePay(this._REAL.payDaily[k]||{}));
       const maxRev=Math.max(...days.map(([,v])=>v.revenue));
       const totRev=days.reduce((a,[,v])=>a+v.revenue,0);
       const totTx=days.reduce((a,[,v])=>a+v.tx,0);
       const totQty=days.reduce((a,[,v])=>a+v.qty,0);
       V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName+' · Jul 1–14',c.navy),kpiCard('Transactions',this.num(totTx),'14 days',c.teal),kpiCard('Items Sold',this.num(totQty),'all items',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(totRev/totTx)),'per receipt',c.gold)];
       V.rNote=rNote;
-      const _dailyChart=this.lineChart(days.map(([k,v])=>({label:k.slice(0,2),value:v.revenue})),c);
-      V.rChart=React.createElement('div',{key:'daily-'+st.branchFilter},_dailyChart);
-      V.rTable=days.map(([day,v])=>{
-        const pay=scalePay(this._REAL.payDaily[day]||{});
+      V.rChart=React.createElement('div',{key:'daily-'+st.branchFilter},this.lineChart(days.map(([k,v])=>({label:k.slice(0,2),value:v.revenue})),c));
+      V.rTable=days.map(([day,v],i)=>{
+        const pay=payDays[i];
         const payStr=Object.entries(pay).sort((a,b)=>b[1]-a[1]).map(([k,val])=>k+' '+this.bahtC(val)).join(' · ');
         return {day,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),payStr};
       });
     }
 
     if(V.isHourly){
-      const hours=Object.entries(this._REAL.hourly).map(([h,v])=>({h:parseInt(h),revenue:scaleD(v.revenue),tx:scaleD(v.tx),qty:scaleD(v.qty)}));
+      let hours;
+      if(!rBranch||rBranch.id==='paolo'){
+        hours=Object.entries(this._REAL.hourly).map(([h,v])=>({h:parseInt(h),revenue:v.revenue,tx:v.tx,qty:v.qty}));
+      } else {
+        /* branch.hours is 7days × 13cols (10:00-22:00), normalize to 14-day Jul total */
+        const julyTot=rBranch.monthly[13];
+        const avgH=rBranch.hours[0].map((_,hi)=>rBranch.hours.reduce((s,d)=>s+d[hi],0)/7);
+        const totH=avgH.reduce((a,b)=>a+b,0)||1;
+        const realHours=[7,8,9]; /* breakfast hours not in branch.hours — use scaled _REAL */
+        const earlyBase=realHours.map(h=>({h,revenue:scaleD(this._REAL.hourly[h].revenue),tx:scaleD(this._REAL.hourly[h].tx),qty:scaleD(this._REAL.hourly[h].qty)}));
+        const lateHours=avgH.slice(0,10).map((rel,hi)=>{
+          const rev=Math.round(julyTot/31*14*rel/totH);
+          const tx=Math.round(rev/rBranch.avgTicket);
+          return {h:hi+10,revenue:rev,tx,qty:Math.round(tx*2.35)};
+        }).filter(x=>x.h<=19);
+        hours=[...earlyBase,...lateHours];
+      }
       const maxRev=Math.max(...hours.map(x=>x.revenue));
       const totRev=hours.reduce((a,x)=>a+x.revenue,0);
       const totTx=hours.reduce((a,x)=>a+x.tx,0);
@@ -1333,7 +1358,17 @@ class Component extends DCLogic {
     }
 
     if(V.isWeekly){
-      const weeks=Object.entries(this._REAL.weekly).map(([k,v])=>([k,{...v,revenue:scaleD(v.revenue),tx:scaleD(v.tx),qty:scaleD(v.qty)}]));
+      let weeks;
+      if(!rBranch||rBranch.id==='paolo'){
+        weeks=Object.entries(this._REAL.weekly).map(([k,v])=>([k,{...v,revenue:v.revenue,tx:v.tx,qty:v.qty}]));
+      } else {
+        /* derive weekly from branch.daily (14 days → W27:day1-7, W28:day8-14) */
+        const bd=rBranch.daily;
+        const w27=bd.slice(0,7).reduce((a,d)=>({revenue:a.revenue+d.value,tx:a.tx+Math.round(d.value/rBranch.avgTicket),qty:a.qty+Math.round(d.value/rBranch.avgTicket*2.35)}),{revenue:0,tx:0,qty:0});
+        const w28=bd.slice(7,14).reduce((a,d)=>({revenue:a.revenue+d.value,tx:a.tx+Math.round(d.value/rBranch.avgTicket),qty:a.qty+Math.round(d.value/rBranch.avgTicket*2.35)}),{revenue:0,tx:0,qty:0});
+        const w29r=Math.round(rBranch.monthly[13]/31*17); /* remaining days estimate */
+        weeks=[['W27',{...w27,label:'Jul 1–7'}],['W28',{...w28,label:'Jul 8–14'}],['W29',{revenue:w29r,tx:Math.round(w29r/rBranch.avgTicket),qty:Math.round(w29r/rBranch.avgTicket*2.35),label:'Jul 15+'}]];
+      }
       const totRev=weeks.reduce((a,[,v])=>a+v.revenue,0);
       const totTx=weeks.reduce((a,[,v])=>a+v.tx,0);
       const maxRev=Math.max(...weeks.map(([,v])=>v.revenue));
@@ -1347,8 +1382,12 @@ class Component extends DCLogic {
 
     if(V.isMonthly){
       const _mo=this._REAL.monthly['2026-07'];
-      const mo={revenue:scaleD(_mo.revenue),tx:scaleD(_mo.tx),qty:scaleD(_mo.qty)};
-      const prevMo={revenue:scaleD(167000),tx:scaleD(1620),qty:scaleD(4200)};
+      const mo=rBranch&&rBranch.id!=='paolo'
+        ?{revenue:rBranch.monthly[13],tx:rBranch.monthlyTx[13],qty:Math.round(rBranch.monthlyTx[13]*2.35)}
+        :{revenue:_mo.revenue,tx:_mo.tx,qty:_mo.qty};
+      const prevMo=rBranch&&rBranch.id!=='paolo'
+        ?{revenue:rBranch.monthly[12],tx:rBranch.monthlyTx[12],qty:Math.round(rBranch.monthlyTx[12]*2.35)}
+        :{revenue:167000,tx:1620,qty:4200};
       const delta=(mo.revenue-prevMo.revenue)/prevMo.revenue*100;
       const up=delta>=0;
       V.rKpis=[kpiCard('Total Revenue',this.baht(mo.revenue),rBranchName+' · Jul 2026',c.navy),kpiCard('Transactions',this.num(mo.tx),'Jul 2026',c.teal),kpiCard('Items Sold',this.num(mo.qty),'Jul 2026',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(mo.revenue/mo.tx)),'per receipt',c.gold)];
@@ -1361,7 +1400,17 @@ class Component extends DCLogic {
       V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barStyle:{height:'100%',borderRadius:999,width:Math.round(val/paySum*100)+'%',background:PAY_COLORS[name]||c.navy,display:'block'}}));
       V.rDelta={text:(up?'+':'')+delta.toFixed(1)+'%',label:'vs Jun 2026',style:{fontSize:14,fontWeight:700,color:up?c.teal:c.down}};
       V.rNote=rNote;
-      const mockMonths=[{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:_mo.revenue,tx:_mo.tx,qty:_mo.qty}].map(m=>({...m,revenue:scaleD(m.revenue),tx:scaleD(m.tx),qty:scaleD(m.qty)}));
+      const moLabels=['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul 2025','Aug 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026','Jul 2026'];
+      const baseMo=rBranch&&rBranch.id!=='paolo'?rBranch:null;
+      const mockMonths=[
+        {label:'Jan 2026',revenue:baseMo?baseMo.monthly[7]:142000,tx:baseMo?baseMo.monthlyTx[7]:1380},
+        {label:'Feb 2026',revenue:baseMo?baseMo.monthly[8]:155000,tx:baseMo?baseMo.monthlyTx[8]:1490},
+        {label:'Mar 2026',revenue:baseMo?baseMo.monthly[9]:161000,tx:baseMo?baseMo.monthlyTx[9]:1540},
+        {label:'Apr 2026',revenue:baseMo?baseMo.monthly[10]:149000,tx:baseMo?baseMo.monthlyTx[10]:1430},
+        {label:'May 2026',revenue:baseMo?baseMo.monthly[11]:158000,tx:baseMo?baseMo.monthlyTx[11]:1520},
+        {label:'Jun 2026',revenue:baseMo?baseMo.monthly[12]:167000,tx:baseMo?baseMo.monthlyTx[12]:1620},
+        {label:'Jul 2026',revenue:mo.revenue,tx:mo.tx}
+      ].map(m=>({...m,qty:Math.round((m.tx||0)*2.35)}));
       const maxMoRev=Math.max(...mockMonths.map(m=>m.revenue));
       /* rMonthChart set above with key for forced re-render */
       V.rMonthTable=mockMonths.map((m,i)=>({label:m.label,revenue:this.baht(m.revenue),tx:this.num(m.tx),qty:this.num(m.qty),avg:this.baht(Math.round(m.revenue/m.tx)),isReal:i===6,barW:Math.round(m.revenue/maxMoRev*100)+'%'}));
