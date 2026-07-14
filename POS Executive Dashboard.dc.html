@@ -583,29 +583,42 @@
               </div>
             </sc-for>
           </div>
+          <div style="{{ cardStyle }};margin-top:16px">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 4px">Monthly Revenue Trend · Jan–Jul 2026</h3>
+            <p style="font-size:12.5px;color:var(--app-ink3);margin:0 0 14px">Jul 2026 = real data from POS · Jan–Jun = estimated</p>
+            {{ rMonthChart }}
+          </div>
           <div style="{{ gridAStyle }}">
-            <div style="{{ cardStyle }}">
-              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Daily Revenue · Jul 2026</h3>
-              {{ rChart }}
+            <div style="{{ cardFlush }}">
+              <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
+                <span>Month</span><span style="text-align:right">Revenue</span><span style="text-align:right">Transactions</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span>
+              </div>
+              <sc-for list="{{ rMonthTable }}" as="r" hint-placeholder-count="7">
+                <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--app-border-sub)">
+                  <span style="font-size:13px;font-weight:600;color:var(--app-ink)">{{ r.label }}</span>
+                  <span style="text-align:right;font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ r.revenue }}</span>
+                  <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.tx }}</span>
+                  <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.qty }}</span>
+                  <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.avg }}</span>
+                </div>
+              </sc-for>
             </div>
             <div style="{{ cardStyle }}">
-              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Payment Mix</h3>
-              <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Payment Mix · Jul 2026</h3>
+              <div style="display:flex;flex-direction:column;gap:14px">
                 <sc-for list="{{ rPayRows }}" as="p" hint-placeholder-count="4">
                   <div>
-                    <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
                       <span style="font-size:13px;font-weight:500;color:var(--app-ink)">{{ p.name }}</span>
-                      <span style="font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ p.amount }} <span style="color:var(--app-ink3);font-weight:400">{{ p.pct }}</span></span>
+                      <span style="font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ p.amount }} <span style="font-size:12px;color:var(--app-ink3);font-weight:400">{{ p.pct }}</span></span>
                     </div>
-                    <div style="height:8px;background:var(--app-bg2);border-radius:999px;overflow:hidden">
-                      <div style="height:100%;border-radius:999px;width:{{ p.barW }};background:{{ p.color }}"></div>
-                    </div>
+                    <div style="height:8px;background:var(--app-bg2);border-radius:999px;overflow:hidden"><span style="{{ p.barStyle }}"></span></div>
                   </div>
                 </sc-for>
               </div>
-              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--app-border);display:flex;align-items:center;gap:8px">
-                <span style="font-size:13px;color:var(--app-ink2)">vs Jun 2026</span>
-                <span style="font-size:14px;font-weight:700;color:{{ rDelta.up ? 'var(--app-teal)' : 'var(--app-down)' }}">{{ rDelta.text }}</span>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--app-border);display:flex;align-items:center;gap:10px">
+                <span style="font-size:13px;color:var(--app-ink2)">{{ rDelta.label }}</span>
+                <span style="{{ rDelta.style }}">{{ rDelta.text }}</span>
               </div>
             </div>
           </div>
@@ -1218,8 +1231,12 @@ class Component extends DCLogic {
       const payTotals={};
       Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+v;}));
       const paySum=Object.values(payTotals).reduce((a,b)=>a+b,0)||1;
-      V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barW:Math.round(val/paySum*100)+'%',color:PAY_COLORS[name]||c.navy}));
-      V.rDelta={up,text:(up?'+':'')+delta.toFixed(1)+'%',label:'vs Jun 2026'};
+      V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barW:Math.round(val/paySum*100)+'%',barStyle:{height:'100%',borderRadius:999,width:Math.round(val/paySum*100)+'%',background:PAY_COLORS[name]||c.navy,display:'block'}}));
+      V.rDelta={text:(up?'+':'')+delta.toFixed(1)+'%',label:'vs Jun 2026',style:{fontSize:14,fontWeight:700,color:up?c.teal:c.down}};
+      const mockMonths=[{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:mo.revenue,tx:mo.tx,qty:mo.qty}];
+      const maxMoRev=Math.max(...mockMonths.map(m=>m.revenue));
+      V.rMonthChart=this.lineChart(mockMonths.map(m=>({label:m.label.slice(0,3),value:m.revenue})),c);
+      V.rMonthTable=mockMonths.map((m,i)=>({label:m.label,revenue:this.baht(m.revenue),tx:this.num(m.tx),qty:this.num(m.qty),avg:this.baht(Math.round(m.revenue/m.tx)),isReal:i===6,barW:Math.round(m.revenue/maxMoRev*100)+'%'}));
     }
 
     if(V.isBranch){
