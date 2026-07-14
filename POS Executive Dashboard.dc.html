@@ -470,6 +470,148 @@
         </div>
       </sc-if>
 
+      <!-- DAILY REPORT -->
+      <sc-if value="{{ isDaily }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="{{ kpiGridStyle }}">
+            <sc-for list="{{ rKpis }}" as="k" hint-placeholder-count="4">
+              <div style="{{ k.cardStyle }}">
+                <div style="font-size:12.5px;font-weight:600;color:var(--app-ink2)">{{ k.label }}</div>
+                <div style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--app-ink);letter-spacing:-.02em;margin-top:10px;font-variant-numeric:tabular-nums">{{ k.value }}</div>
+                <div style="font-size:12px;color:var(--app-ink3);margin-top:6px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ cardStyle }};margin-top:16px">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Daily Revenue Trend</h3>
+            {{ rChart }}
+          </div>
+          <div style="{{ cardFlush }};margin-top:16px">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 2fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
+              <span>Date</span><span style="text-align:right">Revenue</span><span style="text-align:right">Txns</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span><span>Payment Mix</span>
+            </div>
+            <sc-for list="{{ rTable }}" as="r" hint-placeholder-count="14">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 2fr;gap:10px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--app-border-sub)">
+                <span style="font-size:13px;font-weight:600;color:var(--app-ink)">{{ r.day }}</span>
+                <span style="text-align:right;font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ r.revenue }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.tx }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.qty }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.avg }}</span>
+                <span style="font-size:11px;color:var(--app-ink3)">{{ r.payStr }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- HOURLY REPORT -->
+      <sc-if value="{{ isHourly }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="{{ kpiGridStyle }}">
+            <sc-for list="{{ rKpis }}" as="k" hint-placeholder-count="4">
+              <div style="{{ k.cardStyle }}">
+                <div style="font-size:12.5px;font-weight:600;color:var(--app-ink2)">{{ k.label }}</div>
+                <div style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--app-ink);letter-spacing:-.02em;margin-top:10px;font-variant-numeric:tabular-nums">{{ k.value }}</div>
+                <div style="font-size:12px;color:var(--app-ink3);margin-top:6px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ cardStyle }};margin-top:16px">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Revenue by Hour</h3>
+            {{ rChart }}
+          </div>
+          <div style="{{ cardFlush }};margin-top:16px">
+            <div style="display:grid;grid-template-columns:.8fr 1fr 1fr 1fr 1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
+              <span>Hour</span><span style="text-align:right">Revenue</span><span style="text-align:right">Transactions</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span>
+            </div>
+            <sc-for list="{{ rTable }}" as="r" hint-placeholder-count="13">
+              <div style="display:grid;grid-template-columns:.8fr 1fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--app-border-sub)">
+                <span style="font-size:13px;font-weight:700;color:var(--app-ink)">{{ r.hour }}</span>
+                <span style="text-align:right;font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ r.revenue }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.tx }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.qty }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.avg }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- WEEKLY REPORT -->
+      <sc-if value="{{ isWeekly }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="{{ kpiGridStyle }}">
+            <sc-for list="{{ rKpis }}" as="k" hint-placeholder-count="4">
+              <div style="{{ k.cardStyle }}">
+                <div style="font-size:12.5px;font-weight:600;color:var(--app-ink2)">{{ k.label }}</div>
+                <div style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--app-ink);letter-spacing:-.02em;margin-top:10px;font-variant-numeric:tabular-nums">{{ k.value }}</div>
+                <div style="font-size:12px;color:var(--app-ink3);margin-top:6px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ cardStyle }};margin-top:16px">
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Weekly Revenue</h3>
+            {{ rChart }}
+          </div>
+          <div style="{{ cardFlush }};margin-top:16px">
+            <div style="display:grid;grid-template-columns:.8fr 1.2fr 1fr 1fr 1fr 1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
+              <span>Week</span><span>Period</span><span style="text-align:right">Revenue</span><span style="text-align:right">Transactions</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span>
+            </div>
+            <sc-for list="{{ rTable }}" as="r" hint-placeholder-count="3">
+              <div style="display:grid;grid-template-columns:.8fr 1.2fr 1fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--app-border-sub)">
+                <span style="font-size:13px;font-weight:700;color:var(--app-ink)">{{ r.week }}</span>
+                <span style="font-size:13px;color:var(--app-ink2)">{{ r.label }}</span>
+                <span style="text-align:right;font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ r.revenue }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.tx }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.qty }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.avg }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- MONTHLY REPORT -->
+      <sc-if value="{{ isMonthly }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="{{ kpiGridStyle }}">
+            <sc-for list="{{ rKpis }}" as="k" hint-placeholder-count="4">
+              <div style="{{ k.cardStyle }}">
+                <div style="font-size:12.5px;font-weight:600;color:var(--app-ink2)">{{ k.label }}</div>
+                <div style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--app-ink);letter-spacing:-.02em;margin-top:10px;font-variant-numeric:tabular-nums">{{ k.value }}</div>
+                <div style="font-size:12px;color:var(--app-ink3);margin-top:6px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ gridAStyle }}">
+            <div style="{{ cardStyle }}">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Daily Revenue · Jul 2026</h3>
+              {{ rChart }}
+            </div>
+            <div style="{{ cardStyle }}">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Payment Mix</h3>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+                <sc-for list="{{ rPayRows }}" as="p" hint-placeholder-count="4">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                      <span style="font-size:13px;font-weight:500;color:var(--app-ink)">{{ p.name }}</span>
+                      <span style="font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ p.amount }} <span style="color:var(--app-ink3);font-weight:400">{{ p.pct }}</span></span>
+                    </div>
+                    <div style="height:8px;background:var(--app-bg2);border-radius:999px;overflow:hidden">
+                      <div style="height:100%;border-radius:999px;width:{{ p.barW }};background:{{ p.color }}"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--app-border);display:flex;align-items:center;gap:8px">
+                <span style="font-size:13px;color:var(--app-ink2)">vs Jun 2026</span>
+                <span style="font-size:14px;font-weight:700;color:{{ rDelta.up ? 'var(--app-teal)' : 'var(--app-down)' }}">{{ rDelta.text }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
     </main>
   </div>
 
@@ -655,6 +797,24 @@ class Component extends DCLogic {
   pal(t){
     if(t==='dark') return {bg:'#17150F',bg2:'#1E1C15',card:'#201E17',cardAlt:'#26241C',sidebar:'#1B1912',ink:'#F1EFE6',ink2:'#A6A498',ink3:'#75736A',border:'#34312A',borderSub:'#2A2820',gold:'#F6CF47',goldDeep:'#F6CF47',goldTint:'#3A3117',navy:'#6FB3D6',blue:'#6FB3D6',blue2:'#4E88AE',blueLite:'#1E2E38',teal:'#3FBF9B',tealLite:'#173229',green:'#5FB56B',red:'#FF6B67',redTint:'#3A1E1E',amber:'#F5C542',amberTint:'#39310F',down:'#F08A84',purple:'#B694CE',shadow:'0 1px 2px rgba(0,0,0,.4)'};
     return {bg:'#F2F1EA',bg2:'#F8F8F3',card:'#FFFFFF',cardAlt:'#FBFBF7',sidebar:'#FBFBF7',ink:'#1C1D1D',ink2:'#65656F',ink3:'#9A9B9F',border:'#E7E5DD',borderSub:'#F1F0EA',gold:'#F6CF47',goldDeep:'#8F6E12',goldTint:'#FBEFC2',navy:'#275267',blue:'#3E7C99',blue2:'#5E9BC4',blueLite:'#E5EFF4',teal:'#1F8A6E',tealLite:'#E2F1EC',green:'#4F9A5B',red:'#E1443F',redTint:'#FBE9E9',amber:'#D99A00',amberTint:'#FBEFCB',down:'#C0504A',purple:'#8E6BA8',shadow:'0 1px 2px rgba(28,29,29,.06)'};
+  }
+
+  _REAL={daily:{'01/07':{revenue:9989,tx:117,qty:288},'02/07':{revenue:12582,tx:129,qty:338},'03/07':{revenue:14670,tx:152,qty:411},'04/07':{revenue:14949,tx:144,qty:413},'05/07':{revenue:12972,tx:136,qty:387},'06/07':{revenue:9863,tx:105,qty:260},'07/07':{revenue:11689,tx:118,qty:262},'08/07':{revenue:10045,tx:116,qty:278},'09/07':{revenue:14148,tx:150,qty:385},'10/07':{revenue:18238,tx:133,qty:403},'11/07':{revenue:18112,tx:138,qty:367},'12/07':{revenue:14650,tx:111,qty:315},'13/07':{revenue:11248,tx:134,qty:298},'14/07':{revenue:13218,tx:117,qty:274}},hourly:{7:{revenue:12054,tx:148,qty:359},8:{revenue:16002,tx:184,qty:439},9:{revenue:16130,tx:143,qty:384},10:{revenue:16958,tx:127,qty:298},11:{revenue:24107,tx:269,qty:538},12:{revenue:24386,tx:266,qty:565},13:{revenue:22641,tx:217,qty:670},14:{revenue:14903,tx:124,qty:405},15:{revenue:20071,tx:210,qty:715},16:{revenue:6284,tx:40,qty:117},17:{revenue:7004,tx:42,qty:109},18:{revenue:3113,tx:19,qty:51},19:{revenue:2720,tx:11,qty:29}},weekly:{'W27':{revenue:65162,tx:678,qty:1837,label:'Jul 1–7'},'W28':{revenue:96745,tx:871,qty:2270,label:'Jul 8–14'},'W29':{revenue:24466,tx:251,qty:572,label:'Jul 15+'}},monthly:{'2026-07':{revenue:186373,tx:1800,qty:4679,label:'Jul 2026'}},payDaily:{'01/07':{'พร้อมเพย์':6074,'Room Service':970,'แม่มณี':845,'คูปอง':2100},'02/07':{'พร้อมเพย์':8337,'แม่มณี':1155,'Room Service':895,'คูปอง':2195},'03/07':{'พร้อมเพย์':9265,'แม่มณี':1210,'Room Service':395,'คูปอง':3800},'04/07':{'พร้อมเพย์':8454,'แม่มณี':620,'Room Service':875,'คูปอง':5000},'05/07':{'พร้อมเพย์':8417,'Room Service':1015,'แม่มณี':445,'คูปอง':3095},'06/07':{'พร้อมเพย์':7153,'แม่มณี':340,'Room Service':1370,'คูปอง':1000},'07/07':{'พร้อมเพย์':8369,'Room Service':800,'คูปอง':2100,'แม่มณี':420},'08/07':{'พร้อมเพย์':8500,'Room Service':95,'แม่มณี':150,'คูปอง':1300},'09/07':{'พร้อมเพย์':10098,'แม่มณี':1510,'คูปอง':2400,'Room Service':140},'10/07':{'พร้อมเพย์':10058,'Room Service':3330,'แม่มณี':2550,'คูปอง':2300},'11/07':{'พร้อมเพย์':8732,'Room Service':2955,'แม่มณี':3025,'คูปอง':3400},'12/07':{'พร้อมเพย์':6615,'Room Service':5070,'แม่มณี':665,'คูปอง':2300},'13/07':{'พร้อมเพย์':8518,'Room Service':235,'แม่มณี':895,'คูปอง':1600},'14/07':{'พร้อมเพย์':9518,'แม่มณี':1420,'Room Service':980,'คูปอง':1300}}};
+
+  barChart(series,c,metric){
+    const W=820,H=series.length*46+40,pl=72,pr=80,pt=12,pb=12,iw=W-pl-pr;
+    const vals=series.map(s=>s.value),maxV=Math.max(...vals)||1;
+    const els=[];
+    series.forEach((s,i)=>{
+      const y=pt+i*46,bw=Math.round(s.value/maxV*iw),barH=26;
+      const isTop=i===0;
+      els.push(React.createElement('text',{key:'l'+i,x:pl-10,y:y+barH/2+4,textAnchor:'end',fontSize:12.5,fill:c.ink2,fontFamily:'Inter'},s.label));
+      els.push(React.createElement('rect',{key:'bg'+i,x:pl,y,width:iw,height:barH,rx:6,fill:c.bg2}));
+      els.push(React.createElement('rect',{key:'b'+i,x:pl,y,width:Math.max(4,bw),height:barH,rx:6,fill:isTop?c.gold:c.navy}));
+      const valTxt=metric==='revenue'?this.bahtC(s.value):this.num(s.value);
+      els.push(React.createElement('text',{key:'v'+i,x:pl+iw+10,y:y+barH/2+4,fontSize:12.5,fontWeight:600,fill:c.ink,fontFamily:'Inter',fontVariantNumeric:'tabular-nums'},valTxt));
+    });
+    return React.createElement('svg',{viewBox:'0 0 '+W+' '+H,width:'100%',preserveAspectRatio:'xMidYMid meet',style:{display:'block'}},els);
   }
 
   /* ---------- data ---------- */
@@ -857,7 +1017,7 @@ class Component extends DCLogic {
     V.brandRow={display:'flex',alignItems:'center',gap:11,padding:sidebarWide?'0 18px 14px':'0 0 14px',justifyContent:sidebarWide?'flex-start':'center',borderBottom:'1px solid var(--app-border)',marginBottom:6};
     V.logoStyle={width:34,height:34,borderRadius:9,background:c.gold,color:'#1C1D1D',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-display)',fontWeight:800,fontSize:18,flexShrink:0};
 
-    const navDefs=[['overview','Overview','layout-dashboard'],['branch','Branch detail','store']];
+    const navDefs=[['overview','Overview','layout-dashboard'],['branch','Branch detail','store'],['daily','Daily','calendar'],['hourly','Hourly','clock'],['weekly','Weekly','trending-up'],['monthly','Monthly','bank']];
     V.nav=navDefs.map(([id,label,ic])=>{ const active=st.page===id; return {id,label,icon:this.icon(ic,19,active?c.navy:c.ink2),iconWrap:{display:'inline-flex',flexShrink:0},onClick:()=>this.setState({page:id,openMenu:null}),style:{display:'flex',alignItems:'center',gap:12,width:'100%',padding:sidebarWide?'10px 12px':'11px 0',border:'none',borderRadius:10,cursor:'pointer',fontSize:13.5,fontFamily:'inherit',justifyContent:sidebarWide?'flex-start':'center',fontWeight:active?600:500,background:active?'var(--app-blue-lite)':'transparent',color:active?'var(--app-navy)':'var(--app-ink2)',transition:'background .12s'}}; });
 
     V.themeBtnStyle={display:'flex',alignItems:'center',gap:11,width:'100%',padding:sidebarWide?'10px 12px':'11px 0',border:'1px solid var(--app-border)',borderRadius:10,cursor:'pointer',fontSize:13,fontFamily:'inherit',justifyContent:sidebarWide?'flex-start':'center',background:'var(--app-card)',color:'var(--app-ink2)',fontWeight:500};
@@ -869,7 +1029,7 @@ class Component extends DCLogic {
     V.langLabel=L.langLabel;
     V.onLang=()=>this.setState(s=>({lang:s.lang==='en'?'th':'en',openMenu:null}));
 
-    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s]};
+    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s],daily:['Daily Report','Sales by day · Paolo Hospital Rangsit · Jul 1–14, 2026'],hourly:['Hourly Report','Transaction volume by hour · Jul 1–14, 2026'],weekly:['Weekly Report','Sales aggregated by week · Jul 2026'],monthly:['Monthly Report','Month-to-date summary · Jul 2026']};
     V.pageTitle=titles[st.page][0]; V.pageSub=titles[st.page][1];
     V.liveTag=L.live;
     V.headerStyle={display:'flex',alignItems:'center',justifyContent:'space-between',gap:16,padding:'16px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-bg2)',flexShrink:0};
@@ -920,6 +1080,7 @@ class Component extends DCLogic {
     V.periodShort=this.trDate(this.agg().short,lang);
 
     V.isOverview=st.page==='overview'; V.isRecon=st.page==='reconciliation'; V.isBranch=st.page==='branch';
+    V.isDaily=st.page==='daily'; V.isHourly=st.page==='hourly'; V.isWeekly=st.page==='weekly'; V.isMonthly=st.page==='monthly';
 
     const a=this.agg();
     const deltaBadge=(good)=>({display:'inline-flex',alignItems:'center',gap:2,fontSize:12,fontWeight:700,color:good?'var(--app-teal)':'var(--app-down)',background:good?'var(--app-teal-lite)':'transparent',padding:good?'2px 7px':'2px 0',borderRadius:999,fontVariantNumeric:'tabular-nums'});
@@ -1001,6 +1162,64 @@ class Component extends DCLogic {
       const badgeMap={flagged:[L.flagged,c.red,'#fff'],pending:[L.inReview,c.amber,'#1C1D1D'],matched:[L.matched,c.teal,'#fff']};
       const markMap={flagged:c.red,pending:c.amber,matched:c.teal};
       V.reconRows=rows.map(({b,r})=>{ const bm=badgeMap[r.status]; const clickable=r.status!=='matched'; return {name:b.name,region:this.trType(b.region,lang),pos:this.baht(r.pos),expected:this.baht(r.expected),variance:(r.diff>=0?'+':'')+this.baht(Math.abs(r.diff)),items:r.items===0?'—':(''+r.items),varStyle:{textAlign:'right',fontSize:13,fontWeight:600,fontVariantNumeric:'tabular-nums',color:r.status==='matched'?'var(--app-ink3)':(r.status==='flagged'?'var(--app-red)':'var(--app-amber)')},badge:bm[0]+' · '+this.pctStr(r.varPct,1),badgeStyle:{display:'inline-flex',alignItems:'center',fontSize:11,fontWeight:700,padding:'3px 9px',borderRadius:999,background:bm[1],color:bm[2],whiteSpace:'nowrap'},markStyle:{width:4,height:34,borderRadius:999,background:markMap[r.status],flexShrink:0},chev:clickable?this.icon('chevron-right',15,c.ink3):null,chevStyle:{display:'inline-flex',opacity:clickable?1:0},rowStyle:{display:'grid',gridTemplateColumns:'1.6fr 1fr 1fr 1fr .9fr 1.1fr',gap:10,alignItems:'center',padding:'13px 20px',border:'none',borderBottom:'1px solid var(--app-border-sub)',background:'transparent',cursor:clickable?'pointer':'default',width:'100%',fontFamily:'inherit'},onClick:clickable?()=>this.setState({drill:b.id}):()=>{}}; });
+    }
+
+    const PAY_COLORS={'พร้อมเพย์':c.blue,'Room Service':c.goldDeep,'แม่มณี':c.purple,'คูปอง':c.teal};
+    const kpiCard=(label,value,sub,accent)=>({label,value,sub,cardStyle:{...V.cardStyle,borderTop:'3px solid '+accent}});
+
+    if(V.isDaily){
+      const days=Object.entries(this._REAL.daily);
+      const maxRev=Math.max(...days.map(([,v])=>v.revenue));
+      const totRev=days.reduce((a,[,v])=>a+v.revenue,0);
+      const totTx=days.reduce((a,[,v])=>a+v.tx,0);
+      const totQty=days.reduce((a,[,v])=>a+v.qty,0);
+      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),'Jul 1–14, 2026',c.navy),kpiCard('Transactions',this.num(totTx),'14 days',c.teal),kpiCard('Items Sold',this.num(totQty),'all items',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(totRev/totTx)),'per receipt',c.gold)];
+      V.rChart=this.lineChart(days.map(([k,v])=>({label:k.slice(0,2),value:v.revenue})),c);
+      V.rBarTx=this.barChart(days.map(([k,v])=>({label:k,value:v.tx})),c,'count');
+      V.rTable=days.map(([day,v])=>{
+        const pay=this._REAL.payDaily[day]||{};
+        const payStr=Object.entries(pay).sort((a,b)=>b[1]-a[1]).map(([k,val])=>k+' '+this.bahtC(val)).join(' · ');
+        const isWeekend=['06/07','07/07','13/07','14/07'].includes(day);
+        return {day,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),barW:Math.round(v.revenue/maxRev*100)+'%',payStr,isWeekend,barColor:isWeekend?c.teal:c.navy};
+      });
+    }
+
+    if(V.isHourly){
+      const hours=Object.entries(this._REAL.hourly).map(([h,v])=>({h:parseInt(h),...v}));
+      const maxRev=Math.max(...hours.map(x=>x.revenue));
+      const maxTx=Math.max(...hours.map(x=>x.tx));
+      const totRev=hours.reduce((a,x)=>a+x.revenue,0);
+      const totTx=hours.reduce((a,x)=>a+x.tx,0);
+      const peakRev=hours.reduce((a,x)=>x.revenue>a.revenue?x:a);
+      const peakTx=hours.reduce((a,x)=>x.tx>a.tx?x:a);
+      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),'07:00–20:00',c.navy),kpiCard('Transactions',this.num(totTx),'all hours',c.teal),kpiCard('Peak Hour (Sales)',peakRev.h+':00','฿'+this.num(peakRev.revenue),c.gold),kpiCard('Peak Hour (Txns)',peakTx.h+':00',this.num(peakTx.tx)+' txns',c.blue)];
+      V.rChart=this.lineChart(hours.map(x=>({label:x.h+':00',value:x.revenue})),c);
+      V.rTable=hours.map(x=>({hour:x.h+':00',revenue:this.baht(x.revenue),tx:this.num(x.tx),qty:this.num(x.qty),avg:this.baht(Math.round(x.revenue/x.tx)),revBarW:Math.round(x.revenue/maxRev*100)+'%',txBarW:Math.round(x.tx/maxTx*100)+'%',isPeak:x.h===peakRev.h}));
+    }
+
+    if(V.isWeekly){
+      const weeks=Object.entries(this._REAL.weekly);
+      const totRev=weeks.reduce((a,[,v])=>a+v.revenue,0);
+      const totTx=weeks.reduce((a,[,v])=>a+v.tx,0);
+      const maxRev=Math.max(...weeks.map(([,v])=>v.revenue));
+      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),'Jul 2026',c.navy),kpiCard('Transactions',this.num(totTx),'3 weeks',c.teal),kpiCard('Best Week','W28 · Jul 8–14',this.baht(96745),c.gold),kpiCard('Avg/Week',this.baht(Math.round(totRev/weeks.length)),'per week',c.blue)];
+      V.rChart=this.lineChart(weeks.map(([k,v])=>({label:v.label,value:v.revenue})),c);
+      V.rTable=weeks.map(([week,v])=>({week,label:v.label,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),barW:Math.round(v.revenue/maxRev*100)+'%'}));
+    }
+
+    if(V.isMonthly){
+      const mo=this._REAL.monthly['2026-07'];
+      const prevMo={revenue:167000,tx:1620,qty:4200};
+      const delta=(mo.revenue-prevMo.revenue)/prevMo.revenue*100;
+      const up=delta>=0;
+      V.rKpis=[kpiCard('Total Revenue',this.baht(mo.revenue),'Jul 2026',c.navy),kpiCard('Transactions',this.num(mo.tx),'Jul 2026',c.teal),kpiCard('Items Sold',this.num(mo.qty),'Jul 2026',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(mo.revenue/mo.tx)),'per receipt',c.gold)];
+      const dailyVals=Object.entries(this._REAL.daily).map(([k,v])=>({label:k.slice(0,2),value:v.revenue}));
+      V.rChart=this.lineChart(dailyVals,c);
+      const payTotals={};
+      Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+v;}));
+      const paySum=Object.values(payTotals).reduce((a,b)=>a+b,0)||1;
+      V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barW:Math.round(val/paySum*100)+'%',color:PAY_COLORS[name]||c.navy}));
+      V.rDelta={up,text:(up?'+':'')+delta.toFixed(1)+'%',label:'vs Jun 2026'};
     }
 
     if(V.isBranch){
