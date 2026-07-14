@@ -23,6 +23,11 @@
     @keyframes appFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
     @keyframes drawerIn{from{transform:translateX(24px);opacity:0}to{transform:translateX(0);opacity:1}}
     @keyframes toastIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @media print{
+      aside,header,div[style*="filterBar"]{display:none!important}
+      body,html{height:auto!important;overflow:visible!important}
+      main{overflow:visible!important;height:auto!important;padding:16px!important}
+    }
   </style>
 </helmet>
 <div style="{{ rootStyle }}">
@@ -1005,6 +1010,14 @@ class Component extends DCLogic {
     return rows;
   }
 
+  _dlCSV(filename,rows){
+    const csv=rows.map(r=>r.map(v=>'"'+(''+v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+    const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+    document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
   openMenuFn(n){ this.setState(s=>({openMenu:s.openMenu===n?null:n})); }
   toast(msg){ this.setState({toast:msg}); clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({toast:null}),2800); }
 
@@ -1049,7 +1062,35 @@ class Component extends DCLogic {
     V.ghostBtn={position:'relative',width:38,height:38,borderRadius:10,border:'1px solid var(--app-border)',background:'var(--app-card)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'var(--app-ink2)'};
     V.alertDotStyle={position:'absolute',top:9,right:10,width:7,height:7,borderRadius:999,background:c.red,border:'2px solid var(--app-card)'};
     V.exportBtnStyle={display:'inline-flex',alignItems:'center',gap:8,height:38,padding:'0 16px',borderRadius:10,border:'none',background:c.navy,color:'#fff',fontWeight:600,fontSize:13.5,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'};
-    V.onExport=()=>this.toast(L.exportToast+this.trDate(this.agg().label,lang)+' …');
+    V.onExport=()=>{
+      const pg=st.page;
+      if(pg==='daily'){
+        const rows=[['Date','Revenue (THB)','Transactions','Items','Avg Ticket (THB)','PromptPay','Room Service','Mae Manee','Coupon']];
+        Object.entries(this._REAL.daily).forEach(([day,v])=>{
+          const pay=this._REAL.payDaily[day]||{};
+          rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);
+        });
+        this._dlCSV('daily-report-jul2026.csv',rows);
+        this.toast('CSV downloaded — daily-report-jul2026.csv');
+      } else if(pg==='hourly'){
+        const rows=[['Hour','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        Object.entries(this._REAL.hourly).forEach(([h,v])=>rows.push([h+':00',v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
+        this._dlCSV('hourly-report-jul2026.csv',rows);
+        this.toast('CSV downloaded — hourly-report-jul2026.csv');
+      } else if(pg==='weekly'){
+        const rows=[['Week','Period','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        Object.entries(this._REAL.weekly).forEach(([w,v])=>rows.push([w,v.label,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
+        this._dlCSV('weekly-report-jul2026.csv',rows);
+        this.toast('CSV downloaded — weekly-report-jul2026.csv');
+      } else if(pg==='monthly'){
+        const rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        [{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:186373,tx:1800,qty:4679}].forEach(m=>rows.push([m.label,m.revenue,m.tx,m.qty,Math.round(m.revenue/m.tx)]));
+        this._dlCSV('monthly-report-2026.csv',rows);
+        this.toast('CSV downloaded — monthly-report-2026.csv');
+      } else {
+        window.print();
+      }
+    };
     V.onNotify=()=>this.toast(L.notifyToast);
 
     V.filterBarStyle={display:'flex',alignItems:'center',gap:10,padding:'11px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-card)',flexShrink:0,flexWrap:'wrap',position:'relative',zIndex:35};
