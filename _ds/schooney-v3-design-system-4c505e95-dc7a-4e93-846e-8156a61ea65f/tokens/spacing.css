@@ -1,0 +1,35 @@
+/* Schooney V3 — spacing, radius, shadow, motion tokens
+ * Source: Figma page /Spacing-Radius-Shadow
+ */
+
+:root {
+  /* ─────────── Spacing (4px base progression) ─────────── */
+  --spacing-0: 0px;
+  --spacing-1: 2px;
+  --spacing-2: 4px;
+  --spacing-3: 8px;
+  --spacing-4: 12px;
+  --spacing-5: 16px;
+  --spacing-6: 24px;
+  --spacing-7: 32px;
+  --spacing-8: 48px;
+
+  /* ─────────── Radius ─────────── */
+  --radius-sm:   6px;    /* buttons, inputs */
+  --radius-md:   8px;    /* small cards, tabs */
+  --radius-lg:   16px;   /* large cards, dialogs */
+  --radius-xl:   80px;   /* pills */
+  --radius-full: 9999px; /* avatars, dots */
+
+  /* ─────────── Shadows (black, 5–10% opacity, no colour) ─────────── */
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow:    0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+
+  /* ─────────── Motion ─────────── */
+  --duration-fast: 120ms;                       /* @kind other */
+  --duration:      180ms;                       /* @kind other */
+  --duration-slow: 260ms;                       /* @kind other */
+  --ease:          cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+}

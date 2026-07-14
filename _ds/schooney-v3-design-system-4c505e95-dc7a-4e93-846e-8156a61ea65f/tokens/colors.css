@@ -1,0 +1,123 @@
+/* Schooney V3 — color tokens
+ * Source: Figma "SCH V3 Design System.fig" (page /Color)
+ * Primitive ramps + semantic aliases.
+ */
+
+:root {
+  /* ─────────── Primitive ramps ─────────── */
+
+  /* Neutral — UI greys, text, borders */
+  --neutral-0:   #FFFFFF;
+  --neutral-50:  #F9FAFC;
+  --neutral-100: #F4F4F8;
+  --neutral-200: #E3E4EB;
+  --neutral-300: #CACBD4;
+  --neutral-400: #A8A9B2;
+  --neutral-500: #717188;
+  --neutral-800: #1C1D1D;
+  --neutral-900: #000000;
+
+  /* Earth — warm brand neutrals (the canvas) */
+  --earth-50:  #FCFCF9;
+  --earth-100: #F3F3ED;
+  --earth-200: #E6E1D6;
+
+  /* Gold — brand accent */
+  --gold-100: #FCEFB8;   /* light tint — brand-tinted surfaces */
+  --gold-200: #F6CF47;   /* BRAND — the single saturated accent */
+  --gold-300: #E6B72E;   /* darker — hover / pressed on brand fills */
+  --gold-400: #8F6E12;   /* deep — brand text & icons on light surfaces */
+  --brand:    var(--gold-200);
+
+  /* Green light */
+  --green-light-100: #DEF894;
+  --green-light-200: #B8CE7A;
+  --green-light-300: #94A661;
+  --green-light-400: #717F49;
+
+  /* Green dark */
+  --green-dark-100: #37FF57;
+  --green-dark-200: #29E682;
+  --green-dark-300: #02BFB0;
+  --green-dark-400: #279E82;
+
+  /* Red */
+  --red-100: #FE9B9D;
+  --red-200: #FF3737;
+  --red-300: #5C0105;
+  --red-400: #2C0001;
+
+  /* Blue */
+  --blue-100: #CCE6F8;
+  --blue-200: #71C4EF;
+  --blue-300: #509DC2;
+  --blue-400: #275267;
+
+  /* Pink */
+  --pink-100: #FFF2F8;
+  --pink-200: #FDB2C8;
+  --pink-300: #F55DAF;
+  --pink-400: #EB279D;
+  --pink-500: #DB049A;
+
+  /* Yellow */
+  --yellow-100: #FFEFD3;
+  --yellow-200: #FFF500;
+  --yellow-300: #FFCD1B;
+
+  /* Purple */
+  --purple-100: #E2B7FF;
+  --purple-200: #C18CD6;
+  --purple-300: #78418A;
+
+  /* ─────────── Semantic — surfaces ─────────── */
+  --surface-primary:        var(--earth-100);   /* default page canvas */
+  --surface-secondary:      var(--earth-50);
+  --surface-tertiary:       var(--earth-200);
+  --surface-card:           var(--neutral-0);   /* white cards on earth */
+  --surface-muted:          var(--neutral-100);
+  --surface-inverse:        var(--neutral-800);
+  --surface-brand:          var(--brand);          /* gold fill */
+  --surface-brand-contrast: var(--neutral-800);     /* dark text on gold */
+  --surface-brand-tint:     var(--gold-100);        /* soft gold background */
+
+  /* ─────────── Semantic — text ─────────── */
+  --text-primary:   var(--neutral-800);
+  --text-secondary: var(--neutral-500);
+  --text-tertiary:  var(--neutral-400);
+  --text-inverse:   var(--neutral-0);
+  --text-brand:     var(--gold-400);   /* deep gold — readable on light */
+  --text-danger:    var(--red-200);
+  --text-link:      var(--blue-300);
+
+  /* ─────────── Semantic — borders ─────────── */
+  --border-primary:   var(--neutral-500);
+  --border-secondary: var(--neutral-200);   /* the workhorse hairline */
+  --border-subtle:    var(--neutral-100);
+  --border-brand:     var(--gold-300);
+  --border-danger:    var(--red-200);
+
+  /* ─────────── Semantic — icons ─────────── */
+  --icon-primary:   var(--neutral-800);
+  --icon-secondary: var(--neutral-500);
+  --icon-inverse:   var(--neutral-0);
+  --icon-brand:     var(--gold-300);
+  --icon-danger:    var(--red-200);
+
+  /* ─────────── Semantic — buttons ─────────── */
+  --button-primary:      var(--neutral-800);
+  --button-primary-fg:   var(--neutral-0);
+  --button-secondary:    var(--neutral-0);
+  --button-secondary-fg: var(--neutral-800);
+  --button-brand:        var(--brand);
+  --button-brand-fg:     var(--neutral-800);   /* dark text on gold */
+  --button-danger:       var(--red-200);
+  --button-danger-fg:    var(--neutral-0);
+
+  /* ─────────── Avatar / tag accents ─────────── */
+  --user-green-1:  var(--green-light-200);
+  --user-pink-1:   var(--pink-200);
+  --user-blue-1:   var(--blue-200);
+  --user-yellow-1: var(--yellow-300);
+  --user-purple-1: var(--purple-200);
+}

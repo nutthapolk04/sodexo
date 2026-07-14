@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/schooney-v3-design-system-4c505e95-dc7a-4e93-846e-8156a61ea65f/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/schooney-v3-design-system-4c505e95-dc7a-4e93-846e-8156a61ea65f/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/schooney-v3-design-system-4c505e95-dc7a-4e93-846e-8156a61ea65f/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/schooney-v3-design-system-4c505e95-dc7a-4e93-846e-8156a61ea65f/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/schooney-v3-design-system-4c505e95-dc7a-4e93-846e-8156a61ea65f/styles.css">
+  <script src="_ds/schooney-v3-design-system-4c505e95-dc7a-4e93-846e-8156a61ea65f/_ds_bundle.js"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0}
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-thumb{background:var(--app-border);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+    ::-webkit-scrollbar-track{background:transparent}
+    @keyframes appFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @keyframes drawerIn{from{transform:translateX(24px);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes toastIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+  </style>
+</helmet>
+<div style="{{ rootStyle }}">
+
+  <aside style="{{ sidebarStyle }}">
+    <div style="{{ brandRow }}">
+      <div style="{{ logoStyle }}">S</div>
+      <sc-if value="{{ sidebarWide }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;line-height:1.1">
+          <span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--app-ink);letter-spacing:-.01em">{{ brandName }}</span>
+          <span style="font-size:11px;color:var(--app-ink3);font-weight:500">{{ L.posAnalytics }}</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <nav style="display:flex;flex-direction:column;gap:4px;padding:0 12px;margin-top:8px">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="3">
+        <button style="{{ item.style }}" onClick="{{ item.onClick }}" title="{{ item.label }}">
+          <span style="{{ item.iconWrap }}">{{ item.icon }}</span>
+          <sc-if value="{{ sidebarWide }}" hint-placeholder-val="{{ true }}"><span>{{ item.label }}</span></sc-if>
+        </button>
+      </sc-for>
+    </nav>
+
+    <div style="margin-top:auto;padding:12px;display:flex;flex-direction:column;gap:8px">
+      <button style="{{ themeBtnStyle }}" onClick="{{ onLang }}" title="Language">
+        <span style="display:inline-flex">{{ langIcon }}</span>
+        <sc-if value="{{ sidebarWide }}" hint-placeholder-val="{{ true }}"><span>{{ langLabel }}</span></sc-if>
+      </button>
+      <button style="{{ themeBtnStyle }}" onClick="{{ onTheme }}" title="Toggle theme">
+        <span style="display:inline-flex">{{ themeIcon }}</span>
+        <sc-if value="{{ sidebarWide }}" hint-placeholder-val="{{ true }}"><span>{{ themeLabel }}</span></sc-if>
+      </button>
+      <sc-if value="{{ sidebarWide }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--app-bg2);border:1px solid var(--app-border)">
+          <div style="width:30px;height:30px;border-radius:999px;background:var(--app-navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">TN</div>
+          <div style="line-height:1.15;min-width:0">
+            <div style="font-size:12.5px;font-weight:600;color:var(--app-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Thanapat N.</div>
+            <div style="font-size:11px;color:var(--app-ink3)">{{ L.role }}</div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </aside>
+
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden">
+
+    <header style="{{ headerStyle }}">
+      <div style="min-width:0">
+        <div style="display:flex;align-items:center;gap:10px">
+          <h1 style="font-family:var(--font-display);font-size:21px;font-weight:700;color:var(--app-ink);letter-spacing:-.01em;margin:0;white-space:nowrap">{{ pageTitle }}</h1>
+        </div>
+        <p style="margin:3px 0 0;font-size:13px;color:var(--app-ink2)">{{ pageSub }}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <button style="{{ ghostBtn }}" onClick="{{ onNotify }}" title="Alerts">{{ I.bell }}<span style="{{ alertDotStyle }}"></span></button>
+        <button style="{{ exportBtnStyle }}" onClick="{{ onExport }}">{{ I.download }}<span>{{ L.export }}</span></button>
+      </div>
+    </header>
+
+    <div style="{{ filterBarStyle }}">
+      <span style="font-size:12px;font-weight:600;color:var(--app-ink3);display:inline-flex;align-items:center;gap:6px">{{ I.filter }}{{ L.filters }}</span>
+
+      <sc-if value="{{ showBranchFilter }}">
+      <div style="position:relative">
+        <button style="{{ filterCtl }}" onClick="{{ onOpenBranch }}">
+          <span style="display:inline-flex;color:var(--app-ink3)">{{ I.store }}</span>
+          <span style="font-weight:600;color:var(--app-ink)">{{ fBranchLabel }}</span>
+          <span style="display:inline-flex;color:var(--app-ink3)">{{ I.chevron }}</span>
+        </button>
+        <sc-if value="{{ mBranch }}">
+          <div style="{{ menuStyle }}">
+            <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:4px;border:1px solid var(--app-border);border-radius:8px;background:var(--app-bg2)">
+              <span style="display:inline-flex;flex-shrink:0">{{ I.search }}</span>
+              <input value="{{ branchQuery }}" onInput="{{ onBranchSearch }}" placeholder="{{ L.searchSite }}" style="border:none;background:transparent;outline:none;font-size:13px;font-family:inherit;color:var(--app-ink);width:100%;padding:0" />
+            </div>
+            <sc-for list="{{ branchMenu }}" as="m" hint-placeholder-count="6">
+              <button style="{{ m.style }}" onClick="{{ m.onClick }}"><span>{{ m.label }}</span><span style="font-size:11px;color:var(--app-ink3)">{{ m.right }}</span></button>
+            </sc-for>
+            <sc-if value="{{ branchEmpty }}">
+              <div style="padding:12px;text-align:center;font-size:12.5px;color:var(--app-ink3)">{{ L.noResults }}</div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <div style="position:relative">
+        <button style="{{ filterCtl }}" onClick="{{ onOpenPeriod }}">
+          <span style="display:inline-flex;color:var(--app-ink3)">{{ I.calendar }}</span>
+          <span style="font-weight:600;color:var(--app-ink)">{{ fPeriodLabel }}</span>
+          <span style="display:inline-flex;color:var(--app-ink3)">{{ I.chevron }}</span>
+        </button>
+        <sc-if value="{{ mPeriod }}">
+          <div style="{{ menuStyle }}">
+            <sc-for list="{{ periodMenu }}" as="m" hint-placeholder-count="4">
+              <button style="{{ m.style }}" onClick="{{ m.onClick }}"><span>{{ m.label }}</span><span style="font-size:11px;color:var(--app-ink3)">{{ m.right }}</span></button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="position:relative">
+        <button style="{{ filterCtl }}" onClick="{{ onOpenChannel }}">
+          <span style="display:inline-flex;color:var(--app-ink3)">{{ I.card }}</span>
+          <span style="font-weight:600;color:var(--app-ink)">{{ fChannelLabel }}</span>
+          <span style="display:inline-flex;color:var(--app-ink3)">{{ I.chevron }}</span>
+        </button>
+        <sc-if value="{{ mChannel }}">
+          <div style="{{ menuWideStyle }}">
+            <div style="display:flex;justify-content:space-between;padding:4px 8px 8px;border-bottom:1px solid var(--app-border);margin-bottom:4px">
+              <span style="font-size:12px;font-weight:600;color:var(--app-ink2)">{{ L.paymentChannels }}</span>
+              <button style="background:none;border:none;color:var(--app-blue);font-size:12px;font-weight:600;cursor:pointer;padding:0" onClick="{{ onChannelAll }}">{{ channelAllLabel }}</button>
+            </div>
+            <sc-for list="{{ channelMenu }}" as="m" hint-placeholder-count="7">
+              <button style="{{ m.style }}" onClick="{{ m.onClick }}">
+                <span style="{{ m.box }}">{{ m.check }}</span>
+                <span style="{{ m.dot }}"></span>
+                <span style="flex:1;text-align:left">{{ m.label }}</span>
+                <span style="font-size:11px;color:var(--app-ink3);font-variant-numeric:tabular-nums">{{ m.pct }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <span style="flex:1"></span>
+      <span style="font-size:12px;color:var(--app-ink3);white-space:nowrap">{{ L.updated }} {{ updatedAt }}</span>
+    </div>
+
+    <main style="flex:1;overflow:auto;padding:24px 28px 44px">
+
+      <sc-if value="{{ isOverview }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="{{ kpiGridStyle }}">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+              <div style="{{ k.cardStyle }}">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:12.5px;font-weight:600;color:var(--app-ink2)">{{ k.label }}</span>
+                  <span style="{{ k.iconWrap }}">{{ k.icon }}</span>
+                </div>
+                <div style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--app-ink);letter-spacing:-.02em;margin-top:12px;font-variant-numeric:tabular-nums;line-height:1">{{ k.value }}</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:12px">
+                  <span style="{{ k.deltaStyle }}">{{ k.arrow }}{{ k.deltaText }}</span>
+                  <span style="font-size:11.5px;color:var(--app-ink3)">{{ k.compareLabel }}</span>
+                  <span style="margin-left:auto">{{ k.spark }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="{{ gridAStyle }}">
+            <div style="{{ cardStyle }}">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                <div>
+                  <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.salesTrend }}</h3>
+                  <p style="margin:2px 0 0;font-size:12.5px;color:var(--app-ink2)">{{ trendSub }}</p>
+                </div>
+                <div style="{{ segWrap }}">
+                  <sc-for list="{{ trendTabs }}" as="t" hint-placeholder-count="3">
+                    <button style="{{ t.style }}" onClick="{{ t.onClick }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="margin-top:14px">{{ trendChart }}</div>
+            </div>
+
+            <div style="{{ cardStyle }}">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.paymentMix }}</h3>
+                <span style="font-size:11.5px;color:var(--app-ink3)">{{ payScope }}</span>
+              </div>
+              <div style="display:flex;justify-content:center;margin:6px 0 4px">{{ donutChart }}</div>
+              <div style="display:flex;flex-direction:column;gap:7px;margin-top:6px">
+                <sc-for list="{{ payLegend }}" as="p" hint-placeholder-count="6">
+                  <div style="{{ p.rowStyle }}">
+                    <span style="{{ p.dot }}"></span>
+                    <span style="flex:1;font-size:12.5px;color:var(--app-ink);font-weight:500">{{ p.label }}</span>
+                    <span style="font-size:12px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ p.amount }}</span>
+                    <span style="width:42px;text-align:right;font-size:12px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ p.pct }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="{{ gridBStyle }}">
+            <div style="{{ cardStyle }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.branchRanking }}</h3>
+                <span style="font-size:11.5px;color:var(--app-ink3)">{{ L.bySales }} · {{ periodShort }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ ranking }}" as="r" hint-placeholder-count="8">
+                  <button style="{{ r.rowStyle }}" onClick="{{ r.onClick }}">
+                    <span style="{{ r.rankStyle }}">{{ r.rank }}</span>
+                    <div style="flex:1;min-width:0">
+                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+                        <span style="font-size:13.5px;font-weight:600;color:var(--app-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+                        <span style="font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.sales }}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+                        <span style="flex:1;height:7px;background:var(--app-bg2);border-radius:999px;overflow:hidden;display:block"><span style="{{ r.barStyle }}"></span></span>
+                        <span style="width:38px;text-align:right;font-size:11px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.pct }}</span>
+                        <span style="{{ r.deltaStyle }}">{{ r.delta }}</span>
+                      </div>
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="{{ cardStyle }}">
+                <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 2px">{{ L.periodComparison }}</h3>
+                <p style="margin:0 0 12px;font-size:12.5px;color:var(--app-ink2)">{{ compareSub }}</p>
+                <div style="display:grid;grid-template-columns:1.3fr .9fr .9fr .7fr;gap:6px;font-size:11px;color:var(--app-ink3);font-weight:600;padding:0 4px 8px;border-bottom:1px solid var(--app-border)">
+                  <span>{{ L.metric }}</span><span style="text-align:right">{{ compareCur }}</span><span style="text-align:right">{{ comparePrev }}</span><span style="text-align:right">Δ</span>
+                </div>
+                <sc-for list="{{ compareRows }}" as="cr" hint-placeholder-count="4">
+                  <div style="display:grid;grid-template-columns:1.3fr .9fr .9fr .7fr;gap:6px;align-items:center;padding:11px 4px;border-bottom:1px solid var(--app-border-sub)">
+                    <span style="font-size:12.5px;color:var(--app-ink2)">{{ cr.metric }}</span>
+                    <span style="text-align:right;font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ cr.cur }}</span>
+                    <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ cr.prev }}</span>
+                    <span style="{{ cr.deltaStyle }}">{{ cr.delta }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="{{ cardStyle }}">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+                  <span style="display:inline-flex">{{ ovCsatIcon }}</span>
+                  <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.csat }}</h3>
+                  <span style="font-size:11px;color:var(--app-ink3)">· {{ ovCsatScope }}</span>
+                </div>
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <span style="font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--app-ink);line-height:1;letter-spacing:-.02em">{{ ovCsatScore }}</span>
+                  <span style="font-size:15px;color:var(--app-ink3)">/ 5</span>
+                  <span style="{{ ovCsatDeltaStyle }}">{{ ovCsatArrow }}{{ ovCsatDelta }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:10px">{{ ovCsatStars }}</div>
+                <div style="font-size:12px;color:var(--app-ink3);margin-top:10px">{{ ovCsatMeta }}</div>
+                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--app-border-sub);display:flex;flex-direction:column;gap:1px;max-height:232px;overflow-y:auto">
+                  <sc-for list="{{ ovCsatList }}" as="s" hint-placeholder-count="6">
+                    <button style="{{ s.rowStyle }}" onClick="{{ s.onClick }}">
+                      <span style="flex:1;min-width:0;text-align:left;font-size:12.5px;color:var(--app-ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</span>
+                      <span style="width:64px;height:7px;background:var(--app-bg2);border-radius:999px;overflow:hidden;display:block;flex-shrink:0"><span style="{{ s.barStyle }}"></span></span>
+                      <span style="width:26px;text-align:right;font-size:12px;font-weight:700;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ s.score }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRecon }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="{{ kpiGridStyle }}">
+            <sc-for list="{{ reconStats }}" as="s" hint-placeholder-count="4">
+              <div style="{{ s.cardStyle }}">
+                <div style="display:flex;align-items:center;gap:9px">
+                  <span style="{{ s.iconWrap }}">{{ s.icon }}</span>
+                  <span style="font-size:12.5px;font-weight:600;color:var(--app-ink2)">{{ s.label }}</span>
+                </div>
+                <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--app-ink);letter-spacing:-.02em;margin-top:10px;font-variant-numeric:tabular-nums;line-height:1">{{ s.value }}</div>
+                <div style="font-size:12px;color:var(--app-ink2);margin-top:8px">{{ s.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="{{ cardFlush }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--app-border);flex-wrap:wrap;gap:10px">
+              <div>
+                <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.reconTitle }}</h3>
+                <p style="margin:2px 0 0;font-size:12.5px;color:var(--app-ink2)">{{ reconSub }}</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px">
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--app-ink2)"><span style="width:9px;height:9px;border-radius:999px;background:var(--app-teal);display:inline-block"></span>{{ L.matched }}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--app-ink2)"><span style="width:9px;height:9px;border-radius:999px;background:var(--app-amber);display:inline-block"></span>{{ L.inReview }}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--app-ink2)"><span style="width:9px;height:9px;border-radius:999px;background:var(--app-red);display:inline-block"></span>{{ L.flagged }}</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr .9fr 1.1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
+              <span>{{ L.thBranch }}</span><span style="text-align:right">{{ L.thPos }}</span><span style="text-align:right">{{ L.thAcct }}</span><span style="text-align:right">{{ L.thVar }}</span><span style="text-align:center">{{ L.thStatus }}</span><span style="text-align:right">{{ L.thOpen }}</span>
+            </div>
+            <sc-for list="{{ reconRows }}" as="r" hint-placeholder-count="10">
+              <button style="{{ r.rowStyle }}" onClick="{{ r.onClick }}">
+                <div style="display:flex;align-items:center;gap:11px;min-width:0">
+                  <span style="{{ r.markStyle }}"></span>
+                  <div style="min-width:0;text-align:left">
+                    <div style="font-size:13.5px;font-weight:600;color:var(--app-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div>
+                    <div style="font-size:11.5px;color:var(--app-ink3)">{{ r.region }}</div>
+                  </div>
+                </div>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ r.pos }}</span>
+                <span style="text-align:right;font-size:13px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.expected }}</span>
+                <span style="{{ r.varStyle }}">{{ r.variance }}</span>
+                <span style="display:flex;justify-content:center"><span style="{{ r.badgeStyle }}">{{ r.badge }}</span></span>
+                <span style="display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:12.5px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ r.items }}<span style="{{ r.chevStyle }}">{{ r.chev }}</span></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isBranch }}">
+        <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
+          <div style="position:relative;margin-bottom:16px;display:inline-block">
+            <button style="{{ filterCtl }}" onClick="{{ onOpenBrsel }}">
+              <span style="display:inline-flex;color:var(--app-ink3)">{{ I.store }}</span>
+              <span style="font-weight:600;color:var(--app-ink)">{{ brselLabel }}</span>
+              <span style="display:inline-flex;color:var(--app-ink3)">{{ I.chevron }}</span>
+            </button>
+            <sc-if value="{{ mBrsel }}">
+              <div style="{{ menuStyle }}">
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:4px;border:1px solid var(--app-border);border-radius:8px;background:var(--app-bg2)">
+                  <span style="display:inline-flex;flex-shrink:0">{{ I.search }}</span>
+                  <input value="{{ brselQuery }}" onInput="{{ onBrselSearch }}" placeholder="{{ L.searchSite }}" style="border:none;background:transparent;outline:none;font-size:13px;font-family:inherit;color:var(--app-ink);width:100%;padding:0" />
+                </div>
+                <sc-for list="{{ brselMenu }}" as="m" hint-placeholder-count="6">
+                  <button style="{{ m.style }}" onClick="{{ m.onClick }}"><span>{{ m.label }}</span><span style="font-size:11px;color:var(--app-ink3)">{{ m.right }}</span></button>
+                </sc-for>
+                <sc-if value="{{ brselEmpty }}">
+                  <div style="padding:12px;text-align:center;font-size:12.5px;color:var(--app-ink3)">{{ L.noResults }}</div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="{{ cardStyle }}">
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="width:52px;height:52px;border-radius:14px;background:var(--app-navy);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ I.storeLg }}</div>
+              <div style="min-width:0">
+                <h2 style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--app-ink);margin:0;letter-spacing:-.01em">{{ bTitle }}</h2>
+                <p style="margin:4px 0 0;font-size:13px;color:var(--app-ink2);display:flex;align-items:center;gap:6px">{{ I.pin }}{{ bRegion }} · {{ bPeriod }}</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--app-border)">
+              <sc-for list="{{ bKpis }}" as="k" hint-placeholder-count="3">
+                <div style="flex:1;min-width:130px">
+                  <div style="font-size:11.5px;font-weight:600;color:var(--app-ink3)">{{ k.label }}</div>
+                  <div style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--app-ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em;margin-top:4px">{{ k.value }}</div>
+                  <div style="{{ k.deltaStyle }}">{{ k.arrow }}{{ k.delta }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-top:16px">
+            <div style="{{ cardStyle }}">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+                <span style="display:inline-flex">{{ csatIcon }}</span>
+                <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.csat }}</h3>
+              </div>
+              <div style="display:flex;align-items:stretch;flex-wrap:wrap;gap:28px">
+                <div style="min-width:170px;display:flex;flex-direction:column;justify-content:center">
+                  <div style="display:flex;align-items:baseline;gap:8px">
+                    <span style="font-family:var(--font-display);font-size:46px;font-weight:700;color:var(--app-ink);line-height:1;letter-spacing:-.02em">{{ csatScore }}</span>
+                    <span style="font-size:16px;color:var(--app-ink3)">/ 5</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-top:12px">{{ csatStars }}<span style="{{ csatDeltaStyle }}">{{ csatArrow }}{{ csatDelta }}</span></div>
+                  <div style="font-size:12px;color:var(--app-ink3);margin-top:12px">{{ csatMeta }}</div>
+                </div>
+                <div style="width:1px;background:var(--app-border);align-self:stretch"></div>
+                <div style="flex:1;min-width:240px;display:flex;flex-direction:column;justify-content:center;gap:9px">
+                  <sc-for list="{{ csatDist }}" as="d" hint-placeholder-count="5">
+                    <div style="display:flex;align-items:center;gap:12px">
+                      <span style="width:30px;font-size:12px;color:var(--app-ink2);font-weight:600">{{ d.label }}</span>
+                      <span style="flex:1;height:9px;background:var(--app-bg2);border-radius:999px;overflow:hidden;display:block"><span style="{{ d.barStyle }}"></span></span>
+                      <span style="width:40px;text-align:right;font-size:11.5px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ d.pct }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="{{ gridAStyle }}">
+            <div style="{{ cardStyle }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.cashierLeaderboard }}</h3>
+                <span style="font-size:11.5px;color:var(--app-ink3)">{{ L.bySales }} · {{ periodShort }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ bCashiers }}" as="c" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--app-border-sub)">
+                    <span style="{{ c.rankStyle }}">{{ c.rank }}</span>
+                    <div style="width:34px;height:34px;border-radius:999px;background:var(--app-blue-lite);color:var(--app-navy);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">{{ c.initials }}</div>
+                    <div style="flex:1;min-width:0">
+                      <div style="display:flex;justify-content:space-between;gap:8px">
+                        <span style="font-size:13px;font-weight:600;color:var(--app-ink)">{{ c.name }}</span>
+                        <span style="font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ c.sales }}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+                        <span style="flex:1;height:6px;background:var(--app-bg2);border-radius:999px;overflow:hidden;display:block"><span style="{{ c.barStyle }}"></span></span>
+                        <span style="font-size:11px;color:var(--app-ink3);white-space:nowrap">{{ c.meta }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="{{ cardStyle }}">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 4px">{{ L.salesByLocation }}</h3>
+              <div style="display:flex;justify-content:center;margin:8px 0">{{ locDonut }}</div>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+                <sc-for list="{{ bLocLegend }}" as="l" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <span style="{{ l.dot }}"></span>
+                    <span style="flex:1;font-size:12.5px;color:var(--app-ink);font-weight:500">{{ l.label }}</span>
+                    <span style="font-size:12px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ l.amount }}</span>
+                    <span style="width:40px;text-align:right;font-size:12px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ l.pct }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="{{ cardFlush }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--app-border);flex-wrap:wrap;gap:8px">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.transactionLog }}</h3>
+              <span style="font-size:12px;color:var(--app-ink3)">{{ txCountLabel }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:.8fr .9fr 1.1fr 1fr 1.2fr .6fr .9fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
+              <span>{{ L.thTime }}</span><span>{{ L.thReceipt }}</span><span>{{ L.thCashier }}</span><span>{{ L.thLocation }}</span><span>{{ L.thChannel }}</span><span style="text-align:center">{{ L.thQty }}</span><span style="text-align:right">{{ L.thAmount }}</span>
+            </div>
+            <sc-for list="{{ bTxRows }}" as="t" hint-placeholder-count="8">
+              <div style="{{ t.rowStyle }}">
+                <span style="font-size:12.5px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ t.time }}</span>
+                <span style="font-size:12.5px;color:var(--app-ink2);font-family:var(--font-mono)">{{ t.receipt }}</span>
+                <span style="font-size:12.5px;color:var(--app-ink);font-weight:500">{{ t.cashier }}</span>
+                <span style="font-size:12.5px;color:var(--app-ink2)">{{ t.location }}</span>
+                <span><span style="{{ t.chanStyle }}">{{ t.channel }}</span></span>
+                <span style="text-align:center;font-size:12.5px;color:var(--app-ink2);font-variant-numeric:tabular-nums">{{ t.qty }}</span>
+                <span style="text-align:right;font-size:13px;font-weight:600;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ t.amount }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ bTxEmpty }}">
+              <div style="padding:40px;text-align:center;color:var(--app-ink3);font-size:13px">{{ L.noTx }}</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <sc-if value="{{ backdropOpen }}">
+    <div style="position:fixed;inset:0;z-index:30" onClick="{{ onCloseMenus }}"></div>
+  </sc-if>
+
+  <sc-if value="{{ drillOpen }}">
+    <div style="position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end">
+      <div style="position:absolute;inset:0;background:rgba(12,12,10,.42)" onClick="{{ onCloseDrill }}"></div>
+      <div style="{{ drawerStyle }}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:22px 24px 18px;border-bottom:1px solid var(--app-border)">
+          <div style="min-width:0">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span style="{{ drill.badgeStyle }}">{{ drill.badge }}</span>
+              <span style="font-size:12px;color:var(--app-ink3)">{{ L.reconDetail }}</span>
+            </div>
+            <h3 style="font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--app-ink);margin:8px 0 0">{{ drill.branchName }}</h3>
+            <p style="margin:3px 0 0;font-size:12.5px;color:var(--app-ink2)">{{ drill.subtitle }}</p>
+          </div>
+          <button style="background:var(--app-bg2);border:1px solid var(--app-border);border-radius:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--app-ink2);flex-shrink:0" onClick="{{ onCloseDrill }}">{{ I.close }}</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:18px 24px;background:var(--app-bg2)">
+          <div><div style="font-size:11px;color:var(--app-ink3);font-weight:600">{{ L.thPos }}</div><div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--app-ink);font-variant-numeric:tabular-nums;margin-top:3px">{{ drill.posText }}</div></div>
+          <div><div style="font-size:11px;color:var(--app-ink3);font-weight:600">{{ L.thAcct }}</div><div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--app-ink);font-variant-numeric:tabular-nums;margin-top:3px">{{ drill.expText }}</div></div>
+          <div><div style="font-size:11px;color:var(--app-ink3);font-weight:600">{{ L.thVar }}</div><div style="{{ drill.diffStyle }}">{{ drill.diffText }}</div></div>
+        </div>
+        <div style="padding:16px 24px 6px"><span style="font-size:12px;font-weight:600;color:var(--app-ink2)">{{ L.flaggedTx }}</span></div>
+        <div style="overflow-y:auto;padding:0 16px 24px">
+          <sc-for list="{{ drill.rows }}" as="d" hint-placeholder-count="5">
+            <div style="{{ d.cardStyle }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                  <span style="{{ d.dotStyle }}"></span>
+                  <div style="min-width:0">
+                    <div style="font-size:13px;font-weight:600;color:var(--app-ink);font-family:var(--font-mono)">{{ d.receipt }}</div>
+                    <div style="font-size:11.5px;color:var(--app-ink3)">{{ d.meta }}</div>
+                  </div>
+                </div>
+                <div style="text-align:right;flex-shrink:0">
+                  <div style="font-size:13px;font-weight:700;color:var(--app-ink);font-variant-numeric:tabular-nums">{{ d.amount }}</div>
+                  <div style="{{ d.diffStyle }}">{{ d.diff }}</div>
+                </div>
+              </div>
+              <div style="margin-top:10px;padding:9px 11px;background:var(--app-bg2);border-radius:9px;font-size:12px;color:var(--app-ink2);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--app-red);display:inline-flex;flex-shrink:0;margin-top:1px">{{ d.reasonIcon }}</span><span>{{ d.reason }}</span></div>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <button style="flex:1;height:42px;border-radius:10px;border:1px solid var(--app-border);background:var(--app-card);color:var(--app-ink);font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit" onClick="{{ onDrillAction }}">{{ L.assignReview }}</button>
+            <button style="flex:1;height:42px;border-radius:10px;border:none;background:var(--app-navy);color:#fff;font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit" onClick="{{ onDrillAction }}">{{ L.markResolved }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastOpen }}">
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;background:var(--app-ink);color:var(--app-bg);padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:500;box-shadow:0 12px 30px rgba(0,0,0,.28);display:flex;align-items:center;gap:10px;animation:toastIn .24s var(--app-ease)">{{ toastIcon }}{{ toastText }}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;brandName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sodexo Thailand&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;flagThresholdPct&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.5,&quot;min&quot;:0.5,&quot;max&quot;:5,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Reconciliation&quot;}}">
+class Component extends DCLogic {
+  state = {
+    page:'overview', theme:'light', lang:'en', vw:1280, branchFilter:'all', branchQuery:'', brselQuery:'', period:'jul2026',
+    channels:{creditdebit:true,cash:true,promptpay:true,member:true,truemoney:true,roomservice:true,maemanee:true,coupon:true},
+    openMenu:null, trendMode:'monthly', heatBranch:'bumrungrad', drill:null, selectedBranch:'bumrungrad', toast:null, trendHover:null
+  };
+
+  componentDidMount(){
+    if(this.props.defaultTheme==='dark') this.setState({theme:'dark'});
+    this._onResize=()=>{ const w=window.innerWidth; if(Math.abs(w-this.state.vw)>4) this.setState({vw:w}); };
+    window.addEventListener('resize',this._onResize); this._onResize();
+  }
+  componentWillUnmount(){ window.removeEventListener('resize',this._onResize); clearTimeout(this._toastT); }
+
+  /* ---------- i18n ---------- */
+  strings(l){
+    const en={
+      posAnalytics:'POS Analytics', role:'Managing Director', darkMode:'Dark mode', lightMode:'Light mode', langLabel:'ภาษาไทย',
+      live:'Live', filters:'Filters', paymentChannels:'Payment channels', selectAll:'Select all', clearAll:'Clear all',
+      allBranches:'All branches', allChannels:'All channels', noChannels:'No channels', of:'of', channels:'channels',
+      export:'Export report', updated:'Updated', searchSite:'Search site', noResults:'No sites found',
+      ov_t:'Executive overview', ov_s:'Consolidated sales across all sites',
+      rc_t:'Reconciliation', rc_s:'POS vs accounting — catch anomalies fast',
+      br_t:'Branch detail', br_s:'Site-level performance & transactions',
+      kpiSales:'Total sales', kpiTx:'Transactions', kpiAvg:'Avg ticket size', kpiAvgShort:'Avg ticket', kpiItems:'Items sold', vs:'vs',
+      salesTrend:'Sales trend', day:'Day', month:'Month', year:'Year',
+      trendDaily:'Daily sales · July 2026 (MTD, days 1–14)', trendMonthly:'Monthly sales · trailing 12 months', trendYearly:'Annual sales · 2024–2026',
+      paymentMix:'Payment mix', allSites:'all sites', selected:'selected', total:'total',
+      branchRanking:'Site ranking', bySales:'by sales', periodComparison:'Period comparison', metric:'Metric',
+      heatmap:'Sales heatmap · hour × day', peakWindow:'Peak window', lower:'Lower', higher:'Higher',
+      reconciled:'Reconciled', inReview:'In review', flagged:'Flagged', matched:'Matched', unreconValue:'Unreconciled value',
+      sitesMatched:'sites matched', awaiting:'awaiting bank settlement / audit', varianceOver:'variance over threshold', openAcross:'open items across', sites:'sites',
+      reconTitle:'POS vs accounting reconciliation', flagThreshold:'flag threshold',
+      thBranch:'Site', thPos:'POS total', thAcct:'Accounting', thVar:'Variance', thStatus:'Status', thOpen:'Open items',
+      cashierLeaderboard:'Cashier leaderboard', salesByLocation:'Sales by location', transactionLog:'Transaction log',
+      thTime:'Time', thReceipt:'Receipt', thCashier:'Cashier', thLocation:'Location', thChannel:'Channel', thQty:'Qty', thAmount:'Amount',
+      transactions:'transactions', txns:'txns', avg:'avg', noTx:'No transactions match the selected payment channels.', csat:'Customer satisfaction', highest:'Highest', lowest:'Lowest',
+      reconDetail:'Reconciliation detail', flaggedTx:'Flagged transactions', assignReview:'Assign for review', markResolved:'Mark resolved',
+      pThisMonth:'This month', pLastMonth:'Last month', pLast3:'Last 3 months', pYtd:'Year to date',
+      exportToast:'Generating PDF report — ', notifyToast:'3 sites need reconciliation review', drillToast:'Item routed to finance team for review'
+    };
+    const th={
+      posAnalytics:'ระบบวิเคราะห์ POS', role:'กรรมการผู้จัดการ', darkMode:'โหมดมืด', lightMode:'โหมดสว่าง', langLabel:'English',
+      live:'เรียลไทม์', filters:'ตัวกรอง', paymentChannels:'ช่องทางชำระเงิน', selectAll:'เลือกทั้งหมด', clearAll:'ล้างทั้งหมด',
+      allBranches:'ทุกสาขา', allChannels:'ทุกช่องทาง', noChannels:'ไม่เลือกช่องทาง', of:'จาก', channels:'ช่องทาง',
+      export:'ส่งออกรายงาน', updated:'อัปเดต', searchSite:'ค้นหาสาขา', noResults:'ไม่พบสาขา',
+      ov_t:'ภาพรวมผู้บริหาร', ov_s:'สรุปยอดขายรวมทุกสาขา',
+      rc_t:'กระทบยอด', rc_s:'เทียบ POS กับบัญชี — จับความผิดปกติได้ทันที',
+      br_t:'รายละเอียดสาขา', br_s:'ผลการดำเนินงานและรายการขายรายสาขา',
+      kpiSales:'ยอดขายรวม', kpiTx:'จำนวนรายการ', kpiAvg:'ยอดเฉลี่ย/บิล', kpiAvgShort:'เฉลี่ย/บิล', kpiItems:'จำนวนชิ้นที่ขาย', vs:'เทียบ',
+      salesTrend:'แนวโน้มยอดขาย', day:'วัน', month:'เดือน', year:'ปี',
+      trendDaily:'ยอดขายรายวัน · ก.ค. 2026 (ต้นเดือน วันที่ 1–14)', trendMonthly:'ยอดขายรายเดือน · ย้อนหลัง 12 เดือน', trendYearly:'ยอดขายรายปี · 2024–2026',
+      paymentMix:'สัดส่วนช่องทางชำระเงิน', allSites:'ทุกสาขา', selected:'ที่เลือก', total:'รวม',
+      branchRanking:'อันดับสาขา', bySales:'ตามยอดขาย', periodComparison:'เปรียบเทียบช่วงเวลา', metric:'ตัวชี้วัด',
+      heatmap:'ฮีตแมปยอดขาย · ชั่วโมง × วัน', peakWindow:'ช่วงพีค', lower:'น้อย', higher:'มาก',
+      reconciled:'กระทบยอดแล้ว', inReview:'รอตรวจสอบ', flagged:'ผิดปกติ', matched:'ตรงกัน', unreconValue:'มูลค่าที่ยังไม่กระทบยอด',
+      sitesMatched:'สาขาที่ตรงกัน', awaiting:'รอเคลียร์ธนาคาร / ตรวจสอบ', varianceOver:'ส่วนต่างเกินเกณฑ์', openAcross:'รายการค้างใน', sites:'สาขา',
+      reconTitle:'กระทบยอด POS กับบัญชี', flagThreshold:'เกณฑ์แจ้งเตือน',
+      thBranch:'สาขา', thPos:'ยอด POS', thAcct:'ยอดบัญชี', thVar:'ส่วนต่าง', thStatus:'สถานะ', thOpen:'รายการค้าง',
+      cashierLeaderboard:'อันดับแคชเชียร์', salesByLocation:'ยอดขายตามจุดขาย', transactionLog:'บันทึกรายการขาย',
+      thTime:'เวลา', thReceipt:'ใบเสร็จ', thCashier:'แคชเชียร์', thLocation:'จุดขาย', thChannel:'ช่องทาง', thQty:'จำนวน', thAmount:'ยอด',
+      transactions:'รายการ', txns:'รายการ', avg:'เฉลี่ย', noTx:'ไม่มีรายการที่ตรงกับช่องทางชำระเงินที่เลือก', csat:'ความพึงพอใจของลูกค้า', highest:'สูงสุด', lowest:'ต่ำสุด',
+      reconDetail:'รายละเอียดการกระทบยอด', flaggedTx:'รายการที่ผิดปกติ', assignReview:'มอบหมายให้ตรวจสอบ', markResolved:'ทำเครื่องหมายว่าแก้ไขแล้ว',
+      pThisMonth:'เดือนนี้', pLastMonth:'เดือนก่อน', pLast3:'3 เดือนล่าสุด', pYtd:'ตั้งแต่ต้นปี',
+      exportToast:'กำลังสร้างรายงาน PDF — ', notifyToast:'มี 3 สาขาที่ต้องตรวจสอบการกระทบยอด', drillToast:'ส่งรายการให้ทีมการเงินตรวจสอบแล้ว'
+    };
+    return l==='th'?th:en;
+  }
+  trType(r,l){ if(l!=='th')return r; return ({Factory:'โรงงาน',Canteen:'โรงอาหาร',Hospital:'โรงพยาบาล'})[r]||r; }
+  trLoc(n,l){ if(l!=='th')return n; return ({'Dine-in':'ทานที่ร้าน','Takeaway':'สั่งกลับบ้าน','Delivery':'เดลิเวอรี','Kiosk':'คีออสก์','Bar':'บาร์'})[n]||n; }
+  trDate(s,l){ if(l!=='th'||s==null)return s; const map=[['January','ม.ค.'],['February','ก.พ.'],['March','มี.ค.'],['April','เม.ย.'],['June','มิ.ย.'],['July','ก.ค.'],['August','ส.ค.'],['September','ก.ย.'],['October','ต.ค.'],['November','พ.ย.'],['December','ธ.ค.'],['May','พ.ค.'],['Jan','ม.ค.'],['Feb','ก.พ.'],['Mar','มี.ค.'],['Apr','เม.ย.'],['Jun','มิ.ย.'],['Jul','ก.ค.'],['Aug','ส.ค.'],['Sep','ก.ย.'],['Oct','ต.ค.'],['Nov','พ.ย.'],['Dec','ธ.ค.']]; let o=''+s; map.forEach(([k,v])=>{o=o.split(k).join(v);}); o=o.split('YTD').join('ตั้งแต่ต้นปี'); return o; }
+
+  /* ---------- helpers ---------- */
+  _rng(seed){ let s=(seed>>>0)||1; return ()=>{ s=(Math.imul(s,1664525)+1013904223)>>>0; return s/4294967296; }; }
+  baht(n){ return '฿'+Math.round(n).toLocaleString('en-US'); }
+  bahtC(n){ n=Math.round(n); const a=Math.abs(n); if(a>=1e6) return '฿'+(n/1e6).toFixed(a>=1e7?1:2)+'M'; if(a>=1e3) return '฿'+Math.round(n/1e3)+'K'; return '฿'+n; }
+  num(n){ return Math.round(n).toLocaleString('en-US'); }
+  pctStr(n,d){ d=d==null?1:d; return (n>=0?'+':'')+n.toFixed(d)+'%'; }
+  hexRgb(h){ h=h.replace('#',''); if(h.length===3) h=h.split('').map(x=>x+x).join(''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+
+  icon(name,size,color,stroke){
+    size=size||18;
+    return React.createElement('svg',{width:size,height:size,viewBox:'0 0 24 24',fill:'none',stroke:color||'currentColor',strokeWidth:stroke||1.75,strokeLinecap:'round',strokeLinejoin:'round',style:{flexShrink:0,display:'block'},dangerouslySetInnerHTML:{__html:this._ic(name)}});
+  }
+  _ic(n){
+    const M={
+      'layout-dashboard':'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+      'scale':'<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+      'store':'<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/>',
+      'search':'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+      'calendar':'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+      'chevron-down':'<path d="m6 9 6 6 6-6"/>',
+      'chevron-right':'<path d="m9 18 6-6-6-6"/>',
+      'arrow-up':'<path d="m18 15-6-6-6 6"/>',
+      'arrow-down':'<path d="m6 9 6 6 6-6"/>',
+      'trending-up':'<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>',
+      'filter':'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+      'download':'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+      'alert':'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+      'check-circle':'<path d="M21.8 10A10 10 0 1 1 17 3.3"/><path d="m9 11 3 3L22 4"/>',
+      'clock':'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/>',
+      'x':'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+      'sun':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
+      'moon':'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+      'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+      'card':'<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+      'bank':'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+      'ticket':'<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v14"/>',
+      'qr':'<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/>',
+      'pin':'<path d="M20 10c0 4.4-8 12-8 12s-8-7.6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+      'bell':'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+      'receipt':'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/>',
+      'wallet':'<path d="M19 7V5a2 2 0 0 0-2-2H4a2 2 0 0 0 0 4h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a2 2 0 0 1 0-4h4"/>',
+      'globe':'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+      'star':'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
+    };
+    return M[n]||'';
+  }
+
+  pal(t){
+    if(t==='dark') return {bg:'#17150F',bg2:'#1E1C15',card:'#201E17',cardAlt:'#26241C',sidebar:'#1B1912',ink:'#F1EFE6',ink2:'#A6A498',ink3:'#75736A',border:'#34312A',borderSub:'#2A2820',gold:'#F6CF47',goldDeep:'#F6CF47',goldTint:'#3A3117',navy:'#6FB3D6',blue:'#6FB3D6',blue2:'#4E88AE',blueLite:'#1E2E38',teal:'#3FBF9B',tealLite:'#173229',green:'#5FB56B',red:'#FF6B67',redTint:'#3A1E1E',amber:'#F5C542',amberTint:'#39310F',down:'#F08A84',purple:'#B694CE',shadow:'0 1px 2px rgba(0,0,0,.4)'};
+    return {bg:'#F2F1EA',bg2:'#F8F8F3',card:'#FFFFFF',cardAlt:'#FBFBF7',sidebar:'#FBFBF7',ink:'#1C1D1D',ink2:'#65656F',ink3:'#9A9B9F',border:'#E7E5DD',borderSub:'#F1F0EA',gold:'#F6CF47',goldDeep:'#8F6E12',goldTint:'#FBEFC2',navy:'#275267',blue:'#3E7C99',blue2:'#5E9BC4',blueLite:'#E5EFF4',teal:'#1F8A6E',tealLite:'#E2F1EC',green:'#4F9A5B',red:'#E1443F',redTint:'#FBE9E9',amber:'#D99A00',amberTint:'#FBEFCB',down:'#C0504A',purple:'#8E6BA8',shadow:'0 1px 2px rgba(28,29,29,.06)'};
+  }
+
+  /* ---------- data ---------- */
+  _build(){
+    const rng=this._rng(97);
+    const CH=[
+      {id:'creditdebit',label:'Credit / Debit',labelTh:'เครดิต/เดบิต',base:.26,ck:'navy'},
+      {id:'cash',label:'Cash',labelTh:'เงินสด',base:.18,ck:'teal'},
+      {id:'promptpay',label:'PromptPay',labelTh:'พร้อมเพย์',base:.17,ck:'blue'},
+      {id:'member',label:'Member',labelTh:'สมาชิก',base:.11,ck:'green'},
+      {id:'truemoney',label:'TrueMoney',labelTh:'ทรูมันนี่',base:.09,ck:'blue2'},
+      {id:'roomservice',label:'Room Service',labelTh:'รูมเซอร์วิส',base:.08,ck:'goldDeep'},
+      {id:'maemanee',label:'Mae Manee',labelTh:'แม่มณี',base:.07,ck:'purple'},
+      {id:'coupon',label:'Coupon',labelTh:'คูปอง',base:.04,ck:'gold'}
+    ];
+    const N=[['mars','Mars Petcare','Factory',1.14],['essilor','Essilor','Factory',1.02],['alliance','Alliance Laundry Systems','Factory',0.92],['sansiri','Sansiri','Canteen',1.08],['huawei','Huawei','Canteen',1.26],['thb','Thonburi Bamrungmuang','Hospital',1.2],['thg','Thonburi Healthcare Group','Hospital',1.38],['princ','Princ Hospital Suvarnabhumi','Hospital',1.1],['samitivej','Samitivej Chinatown','Hospital',1.0],['bph','Bangkok Hospital Pattaya','Hospital',1.31],['jomtien','Jomtien Hospital','Hospital',0.88],['bumrungrad','Bumrungrad Hospital','Hospital',1.46],['bcm','Bangkok Hospital Chiang Mai','Hospital',1.04],['paolo','Paolo Hospital Rangsit','Hospital',0.95],['bpk9','Bangpakok 9 International Hospital','Hospital',0.84]];
+    const pool=['Fanan','Jandee S.','Nok P.','Ploy W.','Beam','Tar R.','Mint','Gun','Aof','Praewa','Nut','Bank','Ice','Fah','June','Mook','Ohm','Pang'];
+    const seasonal=[.90,.93,.97,1.0,.96,1.05,1.08,1.0,.95,1.02,1.06,1.03,1.10,1.15];
+    const RVAR={essilor:-0.031,bpk9:0.028,huawei:0.009,samitivej:-0.007,paolo:0.012};
+    const PEND={huawei:1,samitivej:1,paolo:1};
+    const dayW=[0.92,0.9,0.95,1.02,1.28,1.42,1.08];
+    const branches=N.map((row,bi)=>{
+      const [id,name,region,w]=row;
+      const monthly=seasonal.map((s,i)=>Math.round(w*1010000*s*(1+i*0.007)*(0.95+rng()*0.09)));
+      const avgTicket=Math.round(178+w*42+rng()*26);
+      const monthlyTx=monthly.map(m=>Math.round(m/avgTicket*(0.97+rng()*0.06)));
+      const jt=monthly[13];
+      let dr=[]; for(let d=0;d<14;d++){ dr.push(dayW[d%7]*(0.88+rng()*0.24)); }
+      const dm=dr.reduce((a,b)=>a+b,0)/dr.length;
+      const daily=dr.map((v,d)=>({day:d+1,value:Math.round(jt/31*v/dm)}));
+      const pm=CH.map(c=>c.base*(0.82+rng()*0.36)); const ps=pm.reduce((a,b)=>a+b,0);
+      const payments=CH.map((c,i)=>({...c,frac:pm[i]/ps}));
+      const locsRaw=[['Dine-in',.46],['Takeaway',.22],['Delivery',.18],['Kiosk',.08],['Bar',.06]].map(([n,f])=>({name:n,frac:f*(0.85+rng()*0.3)}));
+      const ls=locsRaw.reduce((a,l)=>a+l.frac,0); locsRaw.forEach(l=>l.frac/=ls);
+      const cw=[]; for(let i=0;i<5;i++) cw.push(0.45+Math.pow(rng(),1.5)*1.3); const cws=cw.reduce((a,b)=>a+b,0);
+      const cashiers=cw.map((x,i)=>({name:pool[(bi*3+i)%pool.length],frac:x/cws})).sort((a,b)=>b.frac-a.frac);
+      const hours=[]; for(let d=0;d<7;d++){ const rowh=[]; for(let h=10;h<=22;h++){ const lunch=Math.exp(-Math.pow(h-12.5,2)/2.0); const dinner=Math.exp(-Math.pow(h-19,2)/2.4); let v=0.28+0.55*lunch+0.9*dinner; v*=(d>=4?1.16:1.0); v*=(0.88+rng()*0.24); rowh.push(Math.max(0.05,Math.min(1,v))); } hours.push(rowh); }
+      let s5=.5+rng()*.24,s4=.24+rng()*.1,s3=.05+rng()*.06,s2=.02+rng()*.03,s1=.01+rng()*.03; const ss=s5+s4+s3+s2+s1; s5/=ss;s4/=ss;s3/=ss;s2/=ss;s1/=ss;
+      const csatScore=5*s5+4*s4+3*s3+2*s2+1*s1;
+      const csat={score:csatScore,dist:[s5,s4,s3,s2,s1],resp:Math.round((280+w*430)*(0.8+rng()*0.5)),prev:csatScore-(rng()*0.34-0.14)};
+      return {id,name,region,w,monthly,monthlyTx,avgTicket,daily,payments,locs:locsRaw,cashiers,hours,csat,reconVar:(RVAR[id]!==undefined?RVAR[id]:(rng()*0.004-0.002)),pending:!!PEND[id]};
+    });
+    this._data={branches,CH};
+    this._byId={}; branches.forEach(b=>this._byId[b.id]=b);
+  }
+  bget(id){ return this._byId[id]||this._data.branches[0]; }
+
+  _period(b){
+    const m=b.monthly,t=b.monthlyTx;
+    switch(this.state.period){
+      case 'jun2026': return {sales:m[12],tx:t[12],prev:m[11],prevTx:t[11],yoy:m[0],label:'June 2026',prevLabel:'May 2026',short:'Jun'};
+      case 'q3': return {sales:m[11]+m[12]+m[13],tx:t[11]+t[12]+t[13],prev:m[8]+m[9]+m[10],prevTx:t[8]+t[9]+t[10],yoy:null,label:'May–Jul 2026',prevLabel:'Feb–Apr 2026',short:'3M'};
+      case 'y2026': { const s=m.slice(7,14).reduce((a,x)=>a+x,0),tx=t.slice(7,14).reduce((a,x)=>a+x,0); return {sales:s,tx:tx,prev:null,prevTx:null,yoy:null,label:'2026 YTD',prevLabel:'—',short:'YTD'}; }
+      default: return {sales:m[13],tx:t[13],prev:m[12],prevTx:t[12],yoy:m[1],label:'July 2026',prevLabel:'June 2026',short:'Jul'};
+    }
+  }
+  scope(){ return this.state.branchFilter==='all'?this._data.branches:[this.bget(this.state.branchFilter)]; }
+  agg(){
+    const bs=this.scope(); let sales=0,tx=0,prev=0,prevTx=0,yoy=0,hasPrev=true,hasYoy=true;
+    bs.forEach(b=>{ const p=this._period(b); sales+=p.sales; tx+=p.tx; if(p.prev!=null){prev+=p.prev;prevTx+=p.prevTx;}else hasPrev=false; if(p.yoy!=null)yoy+=p.yoy; else hasYoy=false; });
+    const l=this._period(bs[0]);
+    return {sales,tx,prev:hasPrev?prev:null,prevTx:hasPrev?prevTx:null,yoy:hasYoy?yoy:null,label:l.label,prevLabel:l.prevLabel,short:l.short};
+  }
+  reconOf(b){
+    const pos=this._period(b).sales;
+    const expected=pos*(1-b.reconVar);
+    const diff=pos-expected;
+    const varPct=pos?diff/pos*100:0;
+    const th=this.props.flagThresholdPct==null?1.5:this.props.flagThresholdPct;
+    let status = Math.abs(varPct)>th ? 'flagged' : (b.pending?'pending':'matched');
+    const seed=Math.abs(Math.round(pos));
+    const items = status==='matched'?0:(status==='flagged'? 4+Math.round(Math.abs(varPct)*3) + (seed%4) : 2+(seed%5));
+    return {pos,expected,diff,varPct,status,items};
+  }
+
+  /* ---------- charts ---------- */
+  sparkline(vals,c,up){
+    const W=66,H=24,vmin=Math.min(...vals),vmax=Math.max(...vals),rng=(vmax-vmin)||1;
+    const x=i=>i/(vals.length-1)*W, y=v=>H-2-((v-vmin)/rng)*(H-4);
+    const d=vals.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+    const col=up?c.teal:c.down;
+    return React.createElement('svg',{width:W,height:H,viewBox:'0 0 '+W+' '+H,style:{display:'block'}},
+      React.createElement('path',{d:d,fill:'none',stroke:col,strokeWidth:1.75,strokeLinecap:'round',strokeLinejoin:'round'}),
+      React.createElement('circle',{cx:x(vals.length-1),cy:y(vals[vals.length-1]),r:2.4,fill:col}));
+  }
+
+  lineChart(series,c){
+    const W=820,H=286,pl=52,pr=18,pt=18,pb=34,iw=W-pl-pr,ih=H-pt-pb;
+    const vals=series.map(s=>s.value),max=Math.max(...vals)*1.12,min=Math.min(...vals)*0.82,rng=(max-min)||1;
+    const x=i=>pl+(series.length<=1?iw/2:i/(series.length-1)*iw), y=v=>pt+(1-(v-min)/rng)*ih;
+    const pts=series.map((s,i)=>[x(i),y(s.value)]);
+    const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    const area=line+' L '+x(series.length-1).toFixed(1)+' '+(pt+ih)+' L '+x(0).toFixed(1)+' '+(pt+ih)+' Z';
+    const els=[];
+    [0,.25,.5,.75,1].forEach((t,gi)=>{ const gy=pt+t*ih; els.push(React.createElement('line',{key:'g'+gi,x1:pl,x2:W-pr,y1:gy,y2:gy,stroke:c.borderSub,strokeWidth:1})); els.push(React.createElement('text',{key:'yl'+gi,x:pl-9,y:gy+4,textAnchor:'end',fontSize:11,fill:c.ink3,fontFamily:'Inter'},this.bahtC(max-t*rng))); });
+    els.push(React.createElement('path',{key:'ar',d:area,fill:c.navy,opacity:0.07}));
+    els.push(React.createElement('path',{key:'ln',d:line,fill:'none',stroke:c.navy,strokeWidth:2.5,strokeLinejoin:'round',strokeLinecap:'round'}));
+    const step=Math.ceil(series.length/8)||1;
+    series.forEach((s,i)=>{ if(i%step===0||i===series.length-1) els.push(React.createElement('text',{key:'xl'+i,x:x(i),y:H-12,textAnchor:'middle',fontSize:11,fill:c.ink3,fontFamily:'Inter'},s.label)); });
+    pts.forEach((p,i)=>els.push(React.createElement('circle',{key:'dt'+i,cx:p[0],cy:p[1],r:this.state.trendHover===i?5:3,fill:c.card,stroke:c.navy,strokeWidth:2})));
+    const hv=this.state.trendHover;
+    if(hv!=null&&pts[hv]){
+      const p=pts[hv],s=series[hv],tw=118,tx=Math.max(pl,Math.min(W-pr-tw,p[0]-tw/2)),ty=Math.max(pt,p[1]-52);
+      els.push(React.createElement('line',{key:'gl',x1:p[0],x2:p[0],y1:pt,y2:pt+ih,stroke:c.navy,strokeWidth:1,strokeDasharray:'4 3',opacity:.5}));
+      els.push(React.createElement('rect',{key:'tb',x:tx,y:ty,width:tw,height:42,rx:8,fill:c.ink,opacity:.95}));
+      els.push(React.createElement('text',{key:'tt1',x:tx+11,y:ty+17,fontSize:11,fill:c.bg,fontFamily:'Inter',opacity:.8},s.label));
+      els.push(React.createElement('text',{key:'tt2',x:tx+11,y:ty+33,fontSize:14,fontWeight:700,fill:c.bg,fontFamily:'Inter'},this.baht(s.value)));
+    }
+    series.forEach((s,i)=>{ const seg=iw/series.length; els.push(React.createElement('rect',{key:'hz'+i,x:x(i)-seg/2,y:pt,width:seg,height:ih,fill:'transparent',onMouseEnter:()=>this.setState({trendHover:i}),onMouseLeave:()=>this.setState({trendHover:null})})); });
+    return React.createElement('svg',{viewBox:'0 0 '+W+' '+H,width:'100%',preserveAspectRatio:'xMidYMid meet',style:{display:'block',maxHeight:300}},els);
+  }
+
+  donut(segs,c,centerTop,centerBot){
+    const r=54,sw=22,cx=74,cy=74,circ=2*Math.PI*r,total=segs.reduce((a,s)=>a+s.value,0)||1;
+    let off=0; const els=[];
+    els.push(React.createElement('circle',{key:'bg',cx,cy,r,fill:'none',stroke:c.bg2,strokeWidth:sw}));
+    segs.forEach((s,i)=>{ const len=s.value/total*circ; els.push(React.createElement('circle',{key:'s'+i,cx,cy,r,fill:'none',stroke:s.color,strokeWidth:sw,strokeDasharray:len+' '+(circ-len),strokeDashoffset:-off,transform:'rotate(-90 '+cx+' '+cy+')',strokeLinecap:'butt'})); off+=len; });
+    els.push(React.createElement('text',{key:'ct1',x:cx,y:cy-3,textAnchor:'middle',fontSize:17,fontWeight:700,fill:c.ink,fontFamily:'Inter'},centerTop));
+    els.push(React.createElement('text',{key:'ct2',x:cx,y:cy+15,textAnchor:'middle',fontSize:10.5,fill:c.ink3,fontFamily:'Inter'},centerBot));
+    return React.createElement('svg',{width:148,height:148,viewBox:'0 0 148 148',style:{display:'block'}},els);
+  }
+
+  stars(score,c){
+    const full=Math.round(score),els=[];
+    for(let i=1;i<=5;i++){ const on=i<=full; els.push(React.createElement('svg',{key:i,width:17,height:17,viewBox:'0 0 24 24',fill:on?c.gold:'none',stroke:on?c.gold:c.ink3,strokeWidth:1.5,style:{display:'block'}},React.createElement('polygon',{points:'12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'}))); }
+    return React.createElement('div',{style:{display:'flex',gap:3}},els);
+  }
+  heatmap(b,c,lang){
+    const W=772,H=252,pl=44,pt=8,pb=30,cols=13,rows=7,gap=3;
+    const cw=(W-pl-4)/cols,chh=(H-pt-pb)/rows;
+    const [rr,gg,bb]=this.hexRgb(c.teal),days=lang==='th'?['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.']:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const els=[]; let peak=0,pd=0,ph=0;
+    for(let d=0;d<rows;d++) for(let h=0;h<cols;h++){ const v=b.hours[d][h]; if(v>peak){peak=v;pd=d;ph=h;} }
+    for(let d=0;d<rows;d++){
+      els.push(React.createElement('text',{key:'dl'+d,x:pl-9,y:pt+d*chh+chh/2+4,textAnchor:'end',fontSize:11,fill:c.ink3,fontFamily:'Inter'},days[d]));
+      for(let h=0;h<cols;h++){ const v=b.hours[d][h],a=0.08+v*0.9,peaked=(d===pd&&h===ph);
+        els.push(React.createElement('rect',{key:d+'-'+h,x:pl+h*cw,y:pt+d*chh,width:cw-gap,height:chh-gap,rx:3,fill:'rgba('+rr+','+gg+','+bb+','+a.toFixed(2)+')',stroke:peaked?c.gold:'none',strokeWidth:peaked?2:0},
+          React.createElement('title',null,days[d]+' '+(h+10)+':00 · '+Math.round(v*100)+'%'))); }
+    }
+    for(let h=0;h<cols;h+=2){ els.push(React.createElement('text',{key:'hl'+h,x:pl+h*cw+cw/2,y:H-10,textAnchor:'middle',fontSize:10.5,fill:c.ink3,fontFamily:'Inter'},(h+10)+':00')); }
+    this._heatPeak=days[pd]+' '+(ph+10)+':00';
+    return React.createElement('svg',{viewBox:'0 0 '+W+' '+H,width:'100%',preserveAspectRatio:'xMidYMid meet',style:{display:'block',minWidth:640}},els);
+  }
+
+  _txLog(b){
+    const rng=this._rng(this._data.branches.indexOf(b)*131+7);
+    const locs=b.locs,chs=b.payments,rows=[];
+    for(let i=0;i<16;i++){
+      const hh=10+Math.floor(rng()*12),mm=Math.floor(rng()*60);
+      let rl=rng(),acc=0,loc=locs[0].name; for(const l of locs){acc+=l.frac; if(rl<=acc){loc=l.name;break;}}
+      let rc=rng(); acc=0; let ch=chs[0]; for(const x of chs){acc+=x.frac; if(rc<=acc){ch=x;break;}}
+      const cashier=b.cashiers[Math.floor(rng()*b.cashiers.length)].name;
+      const qty=1+Math.floor(rng()*5);
+      const amount=Math.round(b.avgTicket*qty*(0.7+rng()*0.7));
+      rows.push({time:(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm,receipt:'R-'+(250100+Math.floor(rng()*49000)),cashier,location:loc,ch,qty,amount});
+    }
+    return rows.sort((a,b)=>a.time<b.time?1:-1);
+  }
+  _drillRows(b,c,lang){
+    const rng=this._rng(this._data.branches.indexOf(b)*57+3);
+    const reasons=b.reconVar<0
+      ? (lang==='th'
+        ? ['คูปองถูกใช้แต่ยังไม่ลงบัญชี GL','เติมวอลเล็ตสมาชิกยังไม่ sync','คืนเงินหลังปิดรอบขาย','รายการทรูมันนี่ถูกนับซ้ำที่ POS','ยกเลิกบิลหลังปิดรอบ']
+        : ['Coupon redeemed but not posted to GL','Member wallet top-up not synced','Refund issued after settlement','TrueMoney payment double-counted at POS','Void recorded after batch close'])
+      : (lang==='th'
+        ? ['เงินสดในลิ้นชักขาดจากยอด POS','พร้อมเพย์รอเคลียร์กับธนาคาร','ค่ารูมเซอร์วิสยังไม่ถูกบันทึก','ยอดคืนแม่มณีไม่ตรงกัน','ใบนำฝากเงินสดไม่ตรงกัน']
+        : ['Cash drawer short vs POS record','PromptPay settlement pending with bank','Room service charge not captured','Mae Manee refund mismatch','Cash deposit slip mismatch']);
+    const rows=[]; const n=5;
+    for(let i=0;i<n;i++){
+      const hh=11+Math.floor(rng()*11),mm=Math.floor(rng()*60);
+      const amount=Math.round(b.avgTicket*(2+rng()*8));
+      const diff=Math.round(amount*(0.2+rng()*0.5))*(b.reconVar<0?1:-1);
+      rows.push({receipt:'R-'+(250100+Math.floor(rng()*49000)),meta:(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+' · '+b.cashiers[i%b.cashiers.length].name,amount:this.baht(amount),diff:(diff>=0?'+':'')+this.baht(diff).replace('฿','฿'),reason:reasons[i%reasons.length]});
+    }
+    return rows;
+  }
+
+  openMenuFn(n){ this.setState(s=>({openMenu:s.openMenu===n?null:n})); }
+  toast(msg){ this.setState({toast:msg}); clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({toast:null}),2800); }
+
+  renderVals(){
+    if(!this._data) this._build();
+    const st=this.state, c=this.pal(st.theme), CH=this._data.CH;
+    const lang=st.lang, L=this.strings(lang), chLabel=(x)=>(lang==='th'&&x.labelTh)?x.labelTh:x.label;
+    const narrow=st.vw<1080, wide=!narrow || st.vw>900;
+    const sidebarWide=st.vw>=1180;
+    const V={};
+    const vars={'--app-bg':c.bg,'--app-bg2':c.bg2,'--app-card':c.card,'--app-cardalt':c.cardAlt,'--app-sidebar':c.sidebar,'--app-ink':c.ink,'--app-ink2':c.ink2,'--app-ink3':c.ink3,'--app-border':c.border,'--app-border-sub':c.borderSub,'--app-gold':c.gold,'--app-gold-deep':c.goldDeep,'--app-gold-tint':c.goldTint,'--app-navy':c.navy,'--app-blue':c.blue,'--app-blue2':c.blue2,'--app-blue-lite':c.blueLite,'--app-teal':c.teal,'--app-teal-lite':c.tealLite,'--app-green':c.green,'--app-red':c.red,'--app-red-tint':c.redTint,'--app-amber':c.amber,'--app-amber-tint':c.amberTint,'--app-down':c.down,'--app-ease':'cubic-bezier(.4,0,.2,1)'};
+    V.rootStyle={...vars,height:'100vh',display:'flex',width:'100%',background:'var(--app-bg)',color:'var(--app-ink)',fontFamily:'Inter, "IBM Plex Sans Thai", system-ui, sans-serif',overflow:'hidden'};
+    V.brandName=this.props.brandName||'Sodexo Thailand';
+
+    const I={};
+    I.bell=this.icon('bell',18,c.ink2); I.download=this.icon('download',16,'#fff'); I.filter=this.icon('filter',13,c.ink3);
+    I.store=this.icon('store',15); I.chevron=this.icon('chevron-down',15); I.calendar=this.icon('calendar',15); I.card=this.icon('card',15);
+    I.close=this.icon('x',17); I.pin=this.icon('pin',14,c.ink3); I.storeLg=this.icon('store',26,'#fff'); I.search=this.icon('search',15,c.ink3);
+    V.I=I;
+
+    V.sidebarStyle={width:sidebarWide?232:72,flexShrink:0,background:'var(--app-sidebar)',borderRight:'1px solid var(--app-border)',height:'100vh',display:'flex',flexDirection:'column',padding:'18px 0 8px',transition:'width .2s var(--app-ease)'};
+    V.sidebarWide=sidebarWide;
+    V.brandRow={display:'flex',alignItems:'center',gap:11,padding:sidebarWide?'0 18px 14px':'0 0 14px',justifyContent:sidebarWide?'flex-start':'center',borderBottom:'1px solid var(--app-border)',marginBottom:6};
+    V.logoStyle={width:34,height:34,borderRadius:9,background:c.gold,color:'#1C1D1D',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-display)',fontWeight:800,fontSize:18,flexShrink:0};
+
+    const navDefs=[['overview','Overview','layout-dashboard'],['branch','Branch detail','store']];
+    V.nav=navDefs.map(([id,label,ic])=>{ const active=st.page===id; return {id,label,icon:this.icon(ic,19,active?c.navy:c.ink2),iconWrap:{display:'inline-flex',flexShrink:0},onClick:()=>this.setState({page:id,openMenu:null}),style:{display:'flex',alignItems:'center',gap:12,width:'100%',padding:sidebarWide?'10px 12px':'11px 0',border:'none',borderRadius:10,cursor:'pointer',fontSize:13.5,fontFamily:'inherit',justifyContent:sidebarWide?'flex-start':'center',fontWeight:active?600:500,background:active?'var(--app-blue-lite)':'transparent',color:active?'var(--app-navy)':'var(--app-ink2)',transition:'background .12s'}}; });
+
+    V.themeBtnStyle={display:'flex',alignItems:'center',gap:11,width:'100%',padding:sidebarWide?'10px 12px':'11px 0',border:'1px solid var(--app-border)',borderRadius:10,cursor:'pointer',fontSize:13,fontFamily:'inherit',justifyContent:sidebarWide?'flex-start':'center',background:'var(--app-card)',color:'var(--app-ink2)',fontWeight:500};
+    V.themeIcon=this.icon(st.theme==='light'?'moon':'sun',17,c.ink2);
+    V.themeLabel=st.theme==='light'?L.darkMode:L.lightMode;
+    V.onTheme=()=>this.setState(s=>({theme:s.theme==='light'?'dark':'light'}));
+    V.L=L;
+    V.langIcon=this.icon('globe',17,c.ink2);
+    V.langLabel=L.langLabel;
+    V.onLang=()=>this.setState(s=>({lang:s.lang==='en'?'th':'en',openMenu:null}));
+
+    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s]};
+    V.pageTitle=titles[st.page][0]; V.pageSub=titles[st.page][1];
+    V.liveTag=L.live;
+    V.headerStyle={display:'flex',alignItems:'center',justifyContent:'space-between',gap:16,padding:'16px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-bg2)',flexShrink:0};
+    V.ghostBtn={position:'relative',width:38,height:38,borderRadius:10,border:'1px solid var(--app-border)',background:'var(--app-card)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'var(--app-ink2)'};
+    V.alertDotStyle={position:'absolute',top:9,right:10,width:7,height:7,borderRadius:999,background:c.red,border:'2px solid var(--app-card)'};
+    V.exportBtnStyle={display:'inline-flex',alignItems:'center',gap:8,height:38,padding:'0 16px',borderRadius:10,border:'none',background:c.navy,color:'#fff',fontWeight:600,fontSize:13.5,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'};
+    V.onExport=()=>this.toast(L.exportToast+this.trDate(this.agg().label,lang)+' …');
+    V.onNotify=()=>this.toast(L.notifyToast);
+
+    V.filterBarStyle={display:'flex',alignItems:'center',gap:10,padding:'11px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-card)',flexShrink:0,flexWrap:'wrap',position:'relative',zIndex:35};
+    V.filterCtl={display:'inline-flex',alignItems:'center',gap:8,height:36,padding:'0 12px',borderRadius:9,border:'1px solid var(--app-border)',background:'var(--app-bg2)',cursor:'pointer',fontSize:13,fontFamily:'inherit'};
+    V.menuStyle={position:'absolute',top:'calc(100% + 6px)',left:0,minWidth:230,maxHeight:340,overflowY:'auto',background:'var(--app-card)',border:'1px solid var(--app-border)',borderRadius:12,boxShadow:'0 12px 30px rgba(0,0,0,.14)',padding:6,zIndex:45,display:'flex',flexDirection:'column',gap:2};
+    V.menuWideStyle={...V.menuStyle,minWidth:280};
+    V.menuRightStyle={...V.menuStyle,left:'auto',right:0};
+    const mItem=(active)=>({display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,padding:'9px 11px',borderRadius:8,border:'none',cursor:'pointer',fontSize:13,fontFamily:'inherit',textAlign:'left',width:'100%',background:active?'var(--app-blue-lite)':'transparent',color:active?'var(--app-navy)':'var(--app-ink)',fontWeight:active?600:500});
+
+    V.mBranch=st.openMenu==='branch'; V.mPeriod=st.openMenu==='period'; V.mChannel=st.openMenu==='channel'; V.mHeat=st.openMenu==='heat';
+    V.showBranchFilter=st.page!=='branch';
+    V.backdropOpen=!!st.openMenu;
+    V.onOpenBranch=()=>this.openMenuFn('branch'); V.onOpenPeriod=()=>this.openMenuFn('period'); V.onOpenChannel=()=>this.openMenuFn('channel'); V.onOpenHeat=()=>this.openMenuFn('heat');
+    V.onCloseMenus=()=>this.setState({openMenu:null});
+
+    V.fBranchLabel=st.branchFilter==='all'?L.allBranches:this.bget(st.branchFilter).name;
+    V.branchQuery=st.branchQuery;
+    V.onBranchSearch=(e)=>this.setState({branchQuery:e.target.value});
+    const bq=(st.branchQuery||'').trim().toLowerCase();
+    const bItems=this._data.branches.filter(b=> !bq || b.name.toLowerCase().includes(bq) || this.trType(b.region,lang).toLowerCase().includes(bq));
+    V.branchMenu=(bq?[]:[{label:L.allBranches,right:this._data.branches.length+'',active:st.branchFilter==='all',style:mItem(st.branchFilter==='all'),onClick:()=>this.setState({branchFilter:'all',openMenu:null,branchQuery:''})}]).concat(bItems.map(b=>({label:b.name,right:this.trType(b.region,lang),active:st.branchFilter===b.id,style:mItem(st.branchFilter===b.id),onClick:()=>this.setState({branchFilter:b.id,openMenu:null,branchQuery:''})})));
+    V.branchEmpty=bItems.length===0;
+    const perDefs=[['jul2026',L.pThisMonth,'July 2026'],['jun2026',L.pLastMonth,'June 2026'],['q3',L.pLast3,'May–Jul 2026'],['y2026',L.pYtd,'2026']];
+    V.fPeriodLabel=this.trDate(perDefs.find(p=>p[0]===st.period)[2],lang);
+    V.periodMenu=perDefs.map(([id,label,right])=>({label,right:this.trDate(right,lang),active:st.period===id,style:mItem(st.period===id),onClick:()=>this.setState({period:id,openMenu:null})}));
+
+    const selCh=CH.filter(x=>st.channels[x.id]);
+    V.fChannelLabel=selCh.length===CH.length?L.allChannels:(selCh.length===0?L.noChannels:selCh.length+' '+L.of+' '+CH.length);
+    V.channelAllLabel=selCh.length===CH.length?L.clearAll:L.selectAll;
+    V.onChannelAll=()=>{ const all=selCh.length!==CH.length; const nc={}; CH.forEach(x=>nc[x.id]=all); this.setState({channels:nc}); };
+    const chTotAll=this._data.branches.reduce((acc,b)=>{ const s=this._period(b).sales; b.payments.forEach(p=>{acc[p.id]=(acc[p.id]||0)+s*p.frac;}); return acc; },{});
+    const chSum=CH.reduce((a,x)=>a+chTotAll[x.id],0)||1;
+    V.channelMenu=CH.map(x=>{ const on=!!st.channels[x.id]; return {label:chLabel(x),pct:Math.round(chTotAll[x.id]/chSum*100)+'%',dot:{width:9,height:9,borderRadius:2,background:c[x.ck],flexShrink:0},box:{width:17,height:17,borderRadius:5,border:'1.5px solid '+(on?c.navy:c.ink3),background:on?c.navy:'transparent',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0},check:on?this.icon('check-circle',0)&&React.createElement('svg',{width:11,height:11,viewBox:'0 0 24 24',fill:'none',stroke:'#fff',strokeWidth:3.5,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d:'m5 12 5 5L20 6'})):null,style:{display:'flex',alignItems:'center',gap:10,padding:'8px 10px',borderRadius:8,border:'none',cursor:'pointer',fontSize:13,fontFamily:'inherit',width:'100%',background:'transparent',color:'var(--app-ink)'},onClick:()=>this.setState(s=>({channels:{...s.channels,[x.id]:!s.channels[x.id]}}))}; });
+
+    V.updatedAt=lang==='th'?'14 ก.ค. 2026 · 09:42':'Jul 14, 2026 · 09:42';
+    V.cardStyle={background:'var(--app-card)',border:'1px solid var(--app-border)',borderRadius:16,padding:20,boxShadow:c.shadow};
+    V.cardFlush={...V.cardStyle,padding:0,overflow:'hidden',marginTop:16};
+    V.kpiGridStyle={display:'grid',gridTemplateColumns:narrow?'repeat(2,1fr)':'repeat(4,1fr)',gap:16};
+    V.gridAStyle={display:'grid',gridTemplateColumns:narrow?'1fr':'1.85fr 1fr',gap:16,marginTop:16};
+    V.gridBStyle={display:'grid',gridTemplateColumns:narrow?'1fr':'1.35fr 1fr',gap:16,marginTop:16};
+    V.periodShort=this.trDate(this.agg().short,lang);
+
+    V.isOverview=st.page==='overview'; V.isRecon=st.page==='reconciliation'; V.isBranch=st.page==='branch';
+
+    const a=this.agg();
+    const deltaBadge=(good)=>({display:'inline-flex',alignItems:'center',gap:2,fontSize:12,fontWeight:700,color:good?'var(--app-teal)':'var(--app-down)',background:good?'var(--app-teal-lite)':'transparent',padding:good?'2px 7px':'2px 0',borderRadius:999,fontVariantNumeric:'tabular-nums'});
+
+    if(V.isOverview){
+      const bs=this.scope();
+      const sparkMonthly=(fn)=>{ const arr=[]; for(let i=5;i<=12;i++){ let t=0; bs.forEach(b=>t+=fn(b,i)); arr.push(t);} return arr; };
+      const avgCur=a.tx?a.sales/a.tx:0, avgPrev=(a.prev&&a.prevTx)?a.prev/a.prevTx:null;
+      const items=Math.round(a.tx*2.35), itemsPrev=a.prevTx?Math.round(a.prevTx*2.35):null;
+      const mk=(label,ic,val,cur,prev,sparkFn,ac)=>{ const d=(prev!=null&&prev!==0)?(cur-prev)/prev*100:null; const up=d==null?true:d>=0; return {label,icon:this.icon(ic,17,ac.ic),iconWrap:{width:32,height:32,borderRadius:9,background:ac.tint,display:'flex',alignItems:'center',justifyContent:'center'},cardStyle:{...V.cardStyle,borderTop:'3px solid '+ac.line},value:val,arrow:d==null?null:this.icon(up?'arrow-up':'arrow-down',13,up?c.teal:c.down),deltaStyle:d==null?{fontSize:12,color:'var(--app-ink3)'}:deltaBadge(up),deltaText:d==null?'—':this.pctStr(Math.abs(d)),compareLabel:L.vs+' '+this.trDate(a.prevLabel,lang),spark:this.sparkline(sparkFn(),c,up)}; };
+      const AC=[{line:c.navy,tint:c.blueLite,ic:c.navy},{line:c.teal,tint:c.tealLite,ic:c.teal},{line:c.blue,tint:c.blueLite,ic:c.blue},{line:c.gold,tint:c.goldTint,ic:c.goldDeep}];
+      V.kpis=[
+        mk(L.kpiSales,'wallet',this.baht(a.sales),a.sales,a.prev,()=>sparkMonthly((b,i)=>b.monthly[i]),AC[0]),
+        mk(L.kpiTx,'receipt',this.num(a.tx),a.tx,a.prevTx,()=>sparkMonthly((b,i)=>b.monthlyTx[i]),AC[1]),
+        mk(L.kpiAvg,'card',this.baht(avgCur),avgCur,avgPrev,()=>sparkMonthly((b,i)=>b.monthly[i]/b.monthlyTx[i]),AC[2]),
+        mk(L.kpiItems,'ticket',this.num(items),items,itemsPrev,()=>sparkMonthly((b,i)=>b.monthlyTx[i]*2.35),AC[3])
+      ];
+
+      let ser;
+      if(st.trendMode==='daily'){ const nd=bs[0].daily.length; ser=[]; for(let d=0;d<nd;d++){ let t=0; bs.forEach(b=>t+=b.daily[d].value); ser.push({label:''+(d+1),value:t}); } V.trendSub=L.trendDaily; }
+      else if(st.trendMode==='yearly'){ const mult={2024:0.86,2025:0.94,2026:1.0}; ser=[2024,2025,2026].map(y=>{ let t=0; bs.forEach(b=>{ const annual=b.monthly.slice(0,12).reduce((x,m)=>x+m,0); t+=annual*(y===2026?1.0:mult[y]); }); return {label:''+y,value:Math.round(t)}; }); V.trendSub=L.trendYearly; }
+      else { const lab=['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul']; ser=[]; for(let i=2;i<=13;i++){ let t=0; bs.forEach(b=>t+=b.monthly[i]); ser.push({label:lab[i-2],value:t}); } V.trendSub=L.trendMonthly; }
+      V.trendChart=this.lineChart(ser,c);
+      V.segWrap={display:'inline-flex',padding:4,gap:2,background:'var(--app-bg2)',borderRadius:9};
+      V.trendTabs=[['daily',L.day],['monthly',L.month],['yearly',L.year]].map(([id,label])=>{ const on=st.trendMode===id; return {label,onClick:()=>this.setState({trendMode:id,trendHover:null}),style:{padding:'6px 13px',borderRadius:7,border:'none',cursor:'pointer',fontSize:12.5,fontWeight:on?600:500,fontFamily:'inherit',background:on?'var(--app-card)':'transparent',color:on?'var(--app-ink)':'var(--app-ink2)',boxShadow:on?c.shadow:'none'}}; });
+
+      const chAmt=bs.reduce((acc,b)=>{ const s=this._period(b).sales; b.payments.forEach(p=>{acc[p.id]=(acc[p.id]||0)+s*p.frac;}); return acc; },{});
+      const activeCH=CH.filter(x=>st.channels[x.id]);
+      const activeTot=activeCH.reduce((s,x)=>s+chAmt[x.id],0)||1;
+      V.donutChart=this.donut(activeCH.map(x=>({value:chAmt[x.id],color:c[x.ck]})),c,this.bahtC(activeTot),L.selected);
+      V.payScope=st.branchFilter==='all'?L.allSites:this.bget(st.branchFilter).name;
+      V.payLegend=CH.map(x=>{ const on=!!st.channels[x.id]; return {label:chLabel(x),amount:this.bahtC(chAmt[x.id]),pct:Math.round(chAmt[x.id]/(activeTot)*100)+'%',dot:{width:11,height:11,borderRadius:3,background:c[x.ck],flexShrink:0,opacity:on?1:.3},rowStyle:{display:'flex',alignItems:'center',gap:9,opacity:on?1:.4}}; });
+
+      const rankBs=this._data.branches.map(b=>({b,s:this._period(b).sales,p:this._period(b)})).sort((x,y)=>y.s-x.s);
+      const maxS=rankBs[0].s,totS=rankBs.reduce((a2,x)=>a2+x.s,0);
+      V.rankTotalText=this.baht(totS);
+      V.ranking=rankBs.map((row,i)=>{ const d=(row.p.prev&&row.p.prev!==0)?(row.s-row.p.prev)/row.p.prev*100:null; const up=d==null?true:d>=0; const sel=st.branchFilter===row.b.id; return {rank:i+1,name:row.b.name,sales:this.bahtC(row.s),pct:Math.round(row.s/totS*100)+'%',delta:d==null?'—':this.pctStr(Math.abs(d),0),deltaStyle:{display:'inline-flex',alignItems:'center',gap:1,fontSize:11,fontWeight:600,color:up?'var(--app-teal)':'var(--app-down)',width:38,justifyContent:'flex-end',fontVariantNumeric:'tabular-nums'},barStyle:{display:'block',height:'100%',width:Math.round(row.s/maxS*100)+'%',background:i===0?c.gold:c.navy,borderRadius:999},rankStyle:{width:22,height:22,borderRadius:6,background:i<3?'var(--app-gold-tint)':'var(--app-bg2)',color:i<3?'var(--app-gold-deep)':'var(--app-ink2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,flexShrink:0},rowStyle:{display:'flex',alignItems:'center',gap:12,padding:'11px 8px',border:'none',borderBottom:'1px solid var(--app-border-sub)',borderRadius:sel?8:0,background:sel?'var(--app-blue-lite)':'transparent',cursor:'pointer',textAlign:'left',fontFamily:'inherit',width:'100%'},onClick:()=>this.setState({page:'branch',selectedBranch:row.b.id})}; });
+
+      V.compareSub=this.trDate(a.label,lang)+' '+L.vs+' '+this.trDate(a.prevLabel,lang);
+      V.compareCur=this.trDate(a.short,lang); V.comparePrev=a.prevLabel==='—'?'—':this.trDate(a.prevLabel.split(' ')[0],lang);
+      const crow=(m,cur,prev,fmt)=>{ const d=(prev!=null&&prev!==0)?(cur-prev)/prev*100:null; const up=d==null?true:d>=0; return {metric:m,cur:fmt(cur),prev:prev==null?'—':fmt(prev),delta:d==null?'—':this.pctStr(Math.abs(d),0),deltaStyle:{textAlign:'right',fontSize:12,fontWeight:700,color:d==null?'var(--app-ink3)':(up?'var(--app-teal)':'var(--app-down)'),fontVariantNumeric:'tabular-nums'}}; };
+      V.compareRows=[crow(L.kpiSales,a.sales,a.prev,v=>this.bahtC(v)),crow(L.kpiTx,a.tx,a.prevTx,v=>this.num(v)),crow(L.kpiAvgShort,avgCur,avgPrev,v=>this.baht(v)),crow(L.kpiItems,items,itemsPrev,v=>this.num(v))];
+
+      const csAll=this.scope();
+      const csAvg=csAll.reduce((s,b)=>s+b.csat.score,0)/csAll.length;
+      const csAvgPrev=csAll.reduce((s,b)=>s+b.csat.prev,0)/csAll.length;
+      const csResp=csAll.reduce((s,b)=>s+b.csat.resp,0);
+      const csPos=csAll.reduce((s,b)=>s+(b.csat.dist[0]+b.csat.dist[1]),0)/csAll.length;
+      const csDelta=csAvg-csAvgPrev, csUp=csDelta>=0;
+      V.ovCsatScore=csAvg.toFixed(1);
+      V.ovCsatStars=this.stars(csAvg,c);
+      V.ovCsatIcon=React.createElement('svg',{width:18,height:18,viewBox:'0 0 24 24',fill:c.gold,stroke:c.gold,strokeWidth:1.5,style:{display:'block'}},React.createElement('polygon',{points:'12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'}));
+      V.ovCsatArrow=this.icon(csUp?'arrow-up':'arrow-down',12,csUp?c.teal:c.down);
+      V.ovCsatDelta=(csUp?'+':'')+csDelta.toFixed(1);
+      V.ovCsatDeltaStyle={display:'inline-flex',alignItems:'center',gap:2,fontSize:12.5,fontWeight:700,color:csUp?'var(--app-teal)':'var(--app-down)'};
+      V.ovCsatMeta=lang==='th'?(this.num(csResp)+' รีวิว · พอใจ '+Math.round(csPos*100)+'%'):(this.num(csResp)+' responses · '+Math.round(csPos*100)+'% positive');
+      const csSorted=csAll.slice().sort((x,y)=>y.csat.score-x.csat.score),csN=csSorted.length;
+      V.ovCsatScope=st.branchFilter==='all'?L.allSites:this.bget(st.branchFilter).name;
+      V.ovCsatList=csSorted.map((b,i)=>({name:b.name,score:b.csat.score.toFixed(1),onClick:()=>this.setState({page:'branch',selectedBranch:b.id}),barStyle:{display:'block',height:'100%',width:Math.round(Math.max(6,Math.min(100,(b.csat.score-3.8)/1.2*100)))+'%',background:i===0?c.teal:(csN>1&&i===csN-1?c.down:c.gold),borderRadius:999},rowStyle:{display:'flex',alignItems:'center',gap:10,padding:'7px 6px',border:'none',background:'transparent',cursor:'pointer',width:'100%',fontFamily:'inherit',borderRadius:8}}));
+    }
+
+    if(V.isRecon){
+      const rows=this._data.branches.map(b=>({b,r:this.reconOf(b)}));
+      const flagged=rows.filter(x=>x.r.status==='flagged'),pending=rows.filter(x=>x.r.status==='pending'),matched=rows.filter(x=>x.r.status==='matched');
+      const openVal=flagged.concat(pending).reduce((a2,x)=>a2+Math.abs(x.r.diff),0);
+      const openItems=flagged.concat(pending).reduce((a2,x)=>a2+x.r.items,0);
+      const rate=Math.round(matched.length/rows.length*100);
+      const statCard=(accent)=>({background:'var(--app-card)',border:'1px solid var(--app-border)',borderRadius:16,padding:20,boxShadow:c.shadow,borderTop:'3px solid '+accent});
+      V.reconStats=[
+        {label:L.reconciled,value:rate+'%',sub:matched.length+' '+L.of+' '+rows.length+' '+L.sitesMatched,icon:this.icon('check-circle',18,c.teal),iconWrap:{width:32,height:32,borderRadius:9,background:'var(--app-teal-lite)',display:'flex',alignItems:'center',justifyContent:'center'},cardStyle:statCard(c.teal)},
+        {label:L.inReview,value:''+pending.length,sub:L.awaiting,icon:this.icon('clock',18,c.amber),iconWrap:{width:32,height:32,borderRadius:9,background:'var(--app-amber-tint)',display:'flex',alignItems:'center',justifyContent:'center'},cardStyle:statCard(c.amber)},
+        {label:L.flagged,value:''+flagged.length,sub:L.varianceOver,icon:this.icon('alert',18,c.red),iconWrap:{width:32,height:32,borderRadius:9,background:'var(--app-red-tint)',display:'flex',alignItems:'center',justifyContent:'center'},cardStyle:statCard(c.red)},
+        {label:L.unreconValue,value:this.bahtC(openVal),sub:openItems+' '+L.openAcross+' '+(flagged.length+pending.length)+' '+L.sites,icon:this.icon('scale',18,c.navy),iconWrap:{width:32,height:32,borderRadius:9,background:'var(--app-blue-lite)',display:'flex',alignItems:'center',justifyContent:'center'},cardStyle:statCard(c.navy)}
+      ];
+      const th=this.props.flagThresholdPct==null?1.5:this.props.flagThresholdPct;
+      V.reconSub=this.trDate(this.agg().label,lang)+' · '+L.flagThreshold+' ±'+th+'%';
+      const order={flagged:0,pending:1,matched:2};
+      rows.sort((x,y)=> order[x.r.status]-order[y.r.status] || Math.abs(y.r.diff)-Math.abs(x.r.diff));
+      const badgeMap={flagged:[L.flagged,c.red,'#fff'],pending:[L.inReview,c.amber,'#1C1D1D'],matched:[L.matched,c.teal,'#fff']};
+      const markMap={flagged:c.red,pending:c.amber,matched:c.teal};
+      V.reconRows=rows.map(({b,r})=>{ const bm=badgeMap[r.status]; const clickable=r.status!=='matched'; return {name:b.name,region:this.trType(b.region,lang),pos:this.baht(r.pos),expected:this.baht(r.expected),variance:(r.diff>=0?'+':'')+this.baht(Math.abs(r.diff)),items:r.items===0?'—':(''+r.items),varStyle:{textAlign:'right',fontSize:13,fontWeight:600,fontVariantNumeric:'tabular-nums',color:r.status==='matched'?'var(--app-ink3)':(r.status==='flagged'?'var(--app-red)':'var(--app-amber)')},badge:bm[0]+' · '+this.pctStr(r.varPct,1),badgeStyle:{display:'inline-flex',alignItems:'center',fontSize:11,fontWeight:700,padding:'3px 9px',borderRadius:999,background:bm[1],color:bm[2],whiteSpace:'nowrap'},markStyle:{width:4,height:34,borderRadius:999,background:markMap[r.status],flexShrink:0},chev:clickable?this.icon('chevron-right',15,c.ink3):null,chevStyle:{display:'inline-flex',opacity:clickable?1:0},rowStyle:{display:'grid',gridTemplateColumns:'1.6fr 1fr 1fr 1fr .9fr 1.1fr',gap:10,alignItems:'center',padding:'13px 20px',border:'none',borderBottom:'1px solid var(--app-border-sub)',background:'transparent',cursor:clickable?'pointer':'default',width:'100%',fontFamily:'inherit'},onClick:clickable?()=>this.setState({drill:b.id}):()=>{}}; });
+    }
+
+    if(V.isBranch){
+      const b=this.bget(st.selectedBranch),p=this._period(b);
+      V.brselLabel=b.name;
+      V.brselQuery=st.brselQuery;
+      V.onBrselSearch=(e)=>this.setState({brselQuery:e.target.value});
+      V.onOpenBrsel=()=>this.openMenuFn('brsel');
+      V.mBrsel=st.openMenu==='brsel';
+      const bsq=(st.brselQuery||'').trim().toLowerCase();
+      const bsItems=this._data.branches.filter(x=>!bsq||x.name.toLowerCase().includes(bsq)||this.trType(x.region,lang).toLowerCase().includes(bsq));
+      V.brselMenu=bsItems.map(x=>({label:x.name,right:this.trType(x.region,lang),active:st.selectedBranch===x.id,style:mItem(st.selectedBranch===x.id),onClick:()=>this.setState({selectedBranch:x.id,openMenu:null,brselQuery:''})}));
+      V.brselEmpty=bsItems.length===0;
+      V.bTitle=b.name; V.bRegion=this.trType(b.region,lang); V.bPeriod=this.trDate(p.label,lang);
+      const avgCur=p.sales/p.tx, avgPrev=(p.prev&&p.prevTx)?p.prev/p.prevTx:null;
+      const bk=(label,val,cur,prev)=>{ const d=(prev!=null&&prev!==0)?(cur-prev)/prev*100:null; const up=d==null?true:d>=0; return {label,value:val,arrow:d==null?null:this.icon(up?'arrow-up':'arrow-down',12,up?c.teal:c.down),delta:d==null?'—':this.pctStr(Math.abs(d),1),deltaStyle:{display:'inline-flex',alignItems:'center',gap:2,fontSize:11.5,fontWeight:600,marginTop:2,color:d==null?'var(--app-ink3)':(up?'var(--app-teal)':'var(--app-down)')}}; };
+      V.bKpis=[bk(L.kpiSales,this.bahtC(p.sales),p.sales,p.prev),bk(L.kpiTx,this.num(p.tx),p.tx,p.prevTx),bk(L.kpiAvgShort,this.baht(avgCur),avgCur,avgPrev)];
+      const maxC=b.cashiers[0].frac;
+      V.bCashiers=b.cashiers.map((cs,i)=>{ const sales=cs.frac*p.sales,tx=Math.round(cs.frac*p.tx); return {rank:i+1,rankStyle:{width:20,height:20,borderRadius:6,background:i===0?'var(--app-gold-tint)':'var(--app-bg2)',color:i===0?'var(--app-gold-deep)':'var(--app-ink2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,flexShrink:0},initials:cs.name.split(/[ .]/)[0].slice(0,2).toUpperCase(),name:cs.name,sales:this.bahtC(sales),barStyle:{display:'block',height:'100%',width:Math.round(cs.frac/maxC*100)+'%',background:i===0?c.gold:c.navy,borderRadius:999},meta:this.num(tx)+' '+L.txns+' · '+this.baht(sales/tx)+' '+L.avg}; });
+      const locTot=b.locs.reduce((a2,l)=>a2+l.frac,0);
+      const locColors=[c.navy,c.teal,c.blue,c.blue2,c.gold];
+      V.locDonut=this.donut(b.locs.map((l,i)=>({value:l.frac,color:locColors[i%locColors.length]})),c,this.bahtC(p.sales),L.total);
+      V.bLocLegend=b.locs.map((l,i)=>({label:this.trLoc(l.name,lang),amount:this.bahtC(l.frac/locTot*p.sales),pct:Math.round(l.frac/locTot*100)+'%',dot:{width:11,height:11,borderRadius:3,background:locColors[i%locColors.length],flexShrink:0}}));
+      const cs=b.csat, csd=cs.score-cs.prev, csup=csd>=0, csPos=Math.round((cs.dist[0]+cs.dist[1])*100);
+      V.csatScore=cs.score.toFixed(1);
+      V.csatStars=this.stars(cs.score,c);
+      V.csatArrow=this.icon(csup?'arrow-up':'arrow-down',12,csup?c.teal:c.down);
+      V.csatDelta=(csup?'+':'')+csd.toFixed(1);
+      V.csatDeltaStyle={display:'inline-flex',alignItems:'center',gap:2,fontSize:12.5,fontWeight:700,color:csup?'var(--app-teal)':'var(--app-down)'};
+      V.csatMeta=lang==='th'?(this.num(cs.resp)+' รีวิว · พอใจ '+csPos+'%'):(this.num(cs.resp)+' responses · '+csPos+'% positive');
+      V.csatIcon=React.createElement('svg',{width:18,height:18,viewBox:'0 0 24 24',fill:c.gold,stroke:c.gold,strokeWidth:1.5,style:{display:'block'}},React.createElement('polygon',{points:'12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'}));
+      const csatColors=['var(--app-teal)','var(--app-green)','var(--app-amber)','var(--app-down)','var(--app-down)'];
+      V.csatDist=[0,1,2,3,4].map(i=>({label:(5-i)+'★',pct:Math.round(cs.dist[i]*100)+'%',barStyle:{display:'block',height:'100%',width:Math.round(cs.dist[i]*100)+'%',background:csatColors[i],borderRadius:999}}));
+      let tx=this._txLog(b).filter(r=>st.channels[r.ch.id]);
+      V.bTxEmpty=tx.length===0;
+      V.txCountLabel=tx.length+' '+L.transactions+' · '+this.trDate(p.label,lang);
+      V.bTxRows=tx.slice(0,12).map(r=>({time:r.time,receipt:r.receipt,cashier:r.cashier,location:this.trLoc(r.location,lang),channel:chLabel(r.ch),qty:''+r.qty,amount:this.baht(r.amount),chanStyle:{display:'inline-flex',alignItems:'center',fontSize:11.5,fontWeight:600,padding:'3px 8px',borderRadius:6,background:'color-mix(in srgb,'+c[r.ch.ck]+' 16%, transparent)',color:c[r.ch.ck],whiteSpace:'nowrap'},rowStyle:{display:'grid',gridTemplateColumns:'.8fr .9fr 1.1fr 1fr 1.2fr .6fr .9fr',gap:10,alignItems:'center',padding:'12px 20px',borderBottom:'1px solid var(--app-border-sub)'}}));
+    }
+
+    /* drill drawer */
+    V.drillOpen=!!st.drill;
+    if(st.drill){
+      const b=this.bget(st.drill),r=this.reconOf(b);
+      const badgeMap={flagged:[L.flagged,c.red,'#fff'],pending:[L.inReview,c.amber,'#1C1D1D']};
+      const bm=badgeMap[r.status]||badgeMap.flagged;
+      V.drill={branchName:b.name,subtitle:this.trType(b.region,lang)+' · '+this.trDate(this.agg().label,lang),posText:this.baht(r.pos),expText:this.baht(r.expected),diffText:(r.diff>=0?'+':'')+this.baht(Math.abs(r.diff))+' ('+this.pctStr(r.varPct,1)+')',diffStyle:{fontFamily:'var(--font-display)',fontSize:18,fontWeight:700,fontVariantNumeric:'tabular-nums',marginTop:3,color:r.status==='flagged'?'var(--app-red)':'var(--app-amber)'},badge:bm[0],badgeStyle:{display:'inline-flex',alignItems:'center',fontSize:11,fontWeight:700,padding:'3px 9px',borderRadius:999,background:bm[1],color:bm[2]},rows:this._drillRows(b,c,lang).map(d=>({receipt:d.receipt,meta:d.meta,amount:d.amount,diff:d.diff,reason:d.reason,reasonIcon:this.icon('alert',14,c.red),dotStyle:{width:8,height:8,borderRadius:999,background:c.red,flexShrink:0},diffStyle:{fontSize:11.5,fontWeight:700,fontVariantNumeric:'tabular-nums',color:'var(--app-red)'},cardStyle:{background:'var(--app-card)',border:'1px solid var(--app-border)',borderRadius:12,padding:13,marginBottom:9}}))};
+      V.drawerStyle={position:'relative',width:Math.min(460,st.vw-40),maxWidth:'100%',height:'100vh',background:'var(--app-bg2)',borderLeft:'1px solid var(--app-border)',display:'flex',flexDirection:'column',boxShadow:'-16px 0 40px rgba(0,0,0,.18)',animation:'drawerIn .26s var(--app-ease)'};
+      V.onDrillAction=()=>{ this.setState({drill:null}); this.toast(L.drillToast); };
+    }
+    V.onCloseDrill=()=>this.setState({drill:null});
+
+    V.toastOpen=!!st.toast; V.toastText=st.toast||''; V.toastIcon=this.icon('check-circle',16,c.teal);
+    return V;
+  }
+}
+</script>
+</body>
+</html>
