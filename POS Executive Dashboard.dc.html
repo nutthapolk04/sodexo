@@ -499,7 +499,10 @@
             </sc-for>
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
-            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Daily Revenue Trend</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">Daily Revenue Trend</h3>
+              <span style="font-size:11.5px;color:var(--app-ink3)">{{ rNote }}</span>
+            </div>
             {{ rChart }}
           </div>
           <div style="{{ cardFlush }};margin-top:16px">
@@ -533,7 +536,10 @@
             </sc-for>
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
-            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Revenue by Hour</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">Revenue by Hour</h3>
+              <span style="font-size:11.5px;color:var(--app-ink3)">{{ rNote }}</span>
+            </div>
             {{ rChart }}
           </div>
           <div style="{{ cardFlush }};margin-top:16px">
@@ -566,7 +572,10 @@
             </sc-for>
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
-            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Weekly Revenue</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">Weekly Revenue</h3>
+              <span style="font-size:11.5px;color:var(--app-ink3)">{{ rNote }}</span>
+            </div>
             {{ rChart }}
           </div>
           <div style="{{ cardFlush }};margin-top:16px">
@@ -1286,60 +1295,70 @@ class Component extends DCLogic {
     const PAY_COLORS={'พร้อมเพย์':c.blue,'Room Service':c.goldDeep,'แม่มณี':c.purple,'คูปอง':c.teal};
     const kpiCard=(label,value,sub,accent)=>({label,value,sub,cardStyle:{...V.cardStyle,borderTop:'3px solid '+accent}});
 
+    /* branch scale for report pages */
+    const PAOLO_W=0.95;
+    const rBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
+    const rScale=rBranch&&rBranch.id!=='paolo'?rBranch.w/PAOLO_W:1.0;
+    const rBranchName=st.branchFilter==='all'?'All Branches':(rBranch?rBranch.name:'Paolo Hospital Rangsit');
+    const rIsEstimated=rBranch&&rBranch.id!=='paolo';
+    const rNote=rIsEstimated?'Estimated · based on relative branch performance':'Real data · Paolo Hospital Rangsit';
+    const scaleD=(v)=>Math.round(v*rScale);
+    const scalePay=(pay)=>{ const o={}; Object.entries(pay).forEach(([k,v])=>o[k]=Math.round(v*rScale)); return o; };
+
     if(V.isDaily){
-      const days=Object.entries(this._REAL.daily);
+      const days=Object.entries(this._REAL.daily).map(([k,v])=>([k,{revenue:scaleD(v.revenue),tx:scaleD(v.tx),qty:scaleD(v.qty)}]));
       const maxRev=Math.max(...days.map(([,v])=>v.revenue));
       const totRev=days.reduce((a,[,v])=>a+v.revenue,0);
       const totTx=days.reduce((a,[,v])=>a+v.tx,0);
       const totQty=days.reduce((a,[,v])=>a+v.qty,0);
-      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),'Jul 1–14, 2026',c.navy),kpiCard('Transactions',this.num(totTx),'14 days',c.teal),kpiCard('Items Sold',this.num(totQty),'all items',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(totRev/totTx)),'per receipt',c.gold)];
-      V.rChart=this.lineChart(days.map(([k,v])=>({label:k.slice(0,2),value:v.revenue})),c);
-      V.rBarTx=this.barChart(days.map(([k,v])=>({label:k,value:v.tx})),c,'count');
+      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName+' · Jul 1–14',c.navy),kpiCard('Transactions',this.num(totTx),'14 days',c.teal),kpiCard('Items Sold',this.num(totQty),'all items',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(totRev/totTx)),'per receipt',c.gold)];
+      V.rNote=rNote; V.rChart=this.lineChart(days.map(([k,v])=>({label:k.slice(0,2),value:v.revenue})),c);
       V.rTable=days.map(([day,v])=>{
-        const pay=this._REAL.payDaily[day]||{};
+        const pay=scalePay(this._REAL.payDaily[day]||{});
         const payStr=Object.entries(pay).sort((a,b)=>b[1]-a[1]).map(([k,val])=>k+' '+this.bahtC(val)).join(' · ');
-        const isWeekend=['06/07','07/07','13/07','14/07'].includes(day);
-        return {day,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),barW:Math.round(v.revenue/maxRev*100)+'%',payStr,isWeekend,barColor:isWeekend?c.teal:c.navy};
+        return {day,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),payStr};
       });
     }
 
     if(V.isHourly){
-      const hours=Object.entries(this._REAL.hourly).map(([h,v])=>({h:parseInt(h),...v}));
+      const hours=Object.entries(this._REAL.hourly).map(([h,v])=>({h:parseInt(h),revenue:scaleD(v.revenue),tx:scaleD(v.tx),qty:scaleD(v.qty)}));
       const maxRev=Math.max(...hours.map(x=>x.revenue));
-      const maxTx=Math.max(...hours.map(x=>x.tx));
       const totRev=hours.reduce((a,x)=>a+x.revenue,0);
       const totTx=hours.reduce((a,x)=>a+x.tx,0);
       const peakRev=hours.reduce((a,x)=>x.revenue>a.revenue?x:a);
       const peakTx=hours.reduce((a,x)=>x.tx>a.tx?x:a);
-      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),'07:00–20:00',c.navy),kpiCard('Transactions',this.num(totTx),'all hours',c.teal),kpiCard('Peak Hour (Sales)',peakRev.h+':00','฿'+this.num(peakRev.revenue),c.gold),kpiCard('Peak Hour (Txns)',peakTx.h+':00',this.num(peakTx.tx)+' txns',c.blue)];
-      V.rChart=this.lineChart(hours.map(x=>({label:x.h+':00',value:x.revenue})),c);
-      V.rTable=hours.map(x=>({hour:x.h+':00',revenue:this.baht(x.revenue),tx:this.num(x.tx),qty:this.num(x.qty),avg:this.baht(Math.round(x.revenue/x.tx)),revBarW:Math.round(x.revenue/maxRev*100)+'%',txBarW:Math.round(x.tx/maxTx*100)+'%',isPeak:x.h===peakRev.h}));
+      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName,c.navy),kpiCard('Transactions',this.num(totTx),'all hours',c.teal),kpiCard('Peak Hour (Sales)',peakRev.h+':00',this.bahtC(peakRev.revenue),c.gold),kpiCard('Peak Hour (Txns)',peakTx.h+':00',this.num(peakTx.tx)+' txns',c.blue)];
+      V.rNote=rNote; V.rChart=this.lineChart(hours.map(x=>({label:x.h+':00',value:x.revenue})),c);
+      V.rTable=hours.map(x=>({hour:x.h+':00',revenue:this.baht(x.revenue),tx:this.num(x.tx),qty:this.num(x.qty),avg:this.baht(Math.round(x.revenue/x.tx)),isPeak:x.h===peakRev.h}));
     }
 
     if(V.isWeekly){
-      const weeks=Object.entries(this._REAL.weekly);
+      const weeks=Object.entries(this._REAL.weekly).map(([k,v])=>([k,{...v,revenue:scaleD(v.revenue),tx:scaleD(v.tx),qty:scaleD(v.qty)}]));
       const totRev=weeks.reduce((a,[,v])=>a+v.revenue,0);
       const totTx=weeks.reduce((a,[,v])=>a+v.tx,0);
       const maxRev=Math.max(...weeks.map(([,v])=>v.revenue));
-      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),'Jul 2026',c.navy),kpiCard('Transactions',this.num(totTx),'3 weeks',c.teal),kpiCard('Best Week','W28 · Jul 8–14',this.baht(96745),c.gold),kpiCard('Avg/Week',this.baht(Math.round(totRev/weeks.length)),'per week',c.blue)];
-      V.rChart=this.lineChart(weeks.map(([k,v])=>({label:v.label,value:v.revenue})),c);
+      const bestW=weeks.reduce((a,x)=>x[1].revenue>a[1].revenue?x:a);
+      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName+' · Jul 2026',c.navy),kpiCard('Transactions',this.num(totTx),'3 weeks',c.teal),kpiCard('Best Week',bestW[0]+' · '+bestW[1].label,this.bahtC(bestW[1].revenue),c.gold),kpiCard('Avg/Week',this.baht(Math.round(totRev/weeks.length)),'per week',c.blue)];
+      V.rNote=rNote; V.rChart=this.lineChart(weeks.map(([k,v])=>({label:v.label,value:v.revenue})),c);
       V.rTable=weeks.map(([week,v])=>({week,label:v.label,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),barW:Math.round(v.revenue/maxRev*100)+'%'}));
     }
 
     if(V.isMonthly){
-      const mo=this._REAL.monthly['2026-07'];
-      const prevMo={revenue:167000,tx:1620,qty:4200};
+      const _mo=this._REAL.monthly['2026-07'];
+      const mo={revenue:scaleD(_mo.revenue),tx:scaleD(_mo.tx),qty:scaleD(_mo.qty)};
+      const prevMo={revenue:scaleD(167000),tx:scaleD(1620),qty:scaleD(4200)};
       const delta=(mo.revenue-prevMo.revenue)/prevMo.revenue*100;
       const up=delta>=0;
-      V.rKpis=[kpiCard('Total Revenue',this.baht(mo.revenue),'Jul 2026',c.navy),kpiCard('Transactions',this.num(mo.tx),'Jul 2026',c.teal),kpiCard('Items Sold',this.num(mo.qty),'Jul 2026',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(mo.revenue/mo.tx)),'per receipt',c.gold)];
-      const dailyVals=Object.entries(this._REAL.daily).map(([k,v])=>({label:k.slice(0,2),value:v.revenue}));
+      V.rKpis=[kpiCard('Total Revenue',this.baht(mo.revenue),rBranchName+' · Jul 2026',c.navy),kpiCard('Transactions',this.num(mo.tx),'Jul 2026',c.teal),kpiCard('Items Sold',this.num(mo.qty),'Jul 2026',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(mo.revenue/mo.tx)),'per receipt',c.gold)];
+      const dailyVals=Object.entries(this._REAL.daily).map(([k,v])=>({label:k.slice(0,2),value:scaleD(v.revenue)}));
       V.rChart=this.lineChart(dailyVals,c);
       const payTotals={};
-      Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+v;}));
+      Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+Math.round(v*rScale);}));
       const paySum=Object.values(payTotals).reduce((a,b)=>a+b,0)||1;
-      V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barW:Math.round(val/paySum*100)+'%',barStyle:{height:'100%',borderRadius:999,width:Math.round(val/paySum*100)+'%',background:PAY_COLORS[name]||c.navy,display:'block'}}));
+      V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barStyle:{height:'100%',borderRadius:999,width:Math.round(val/paySum*100)+'%',background:PAY_COLORS[name]||c.navy,display:'block'}}));
       V.rDelta={text:(up?'+':'')+delta.toFixed(1)+'%',label:'vs Jun 2026',style:{fontSize:14,fontWeight:700,color:up?c.teal:c.down}};
-      const mockMonths=[{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:mo.revenue,tx:mo.tx,qty:mo.qty}];
+      V.rNote=rNote;
+      const mockMonths=[{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:_mo.revenue,tx:_mo.tx,qty:_mo.qty}].map(m=>({...m,revenue:scaleD(m.revenue),tx:scaleD(m.tx),qty:scaleD(m.qty)}));
       const maxMoRev=Math.max(...mockMonths.map(m=>m.revenue));
       V.rMonthChart=this.lineChart(mockMonths.map(m=>({label:m.label.slice(0,3),value:m.revenue})),c);
       V.rMonthTable=mockMonths.map((m,i)=>({label:m.label,revenue:this.baht(m.revenue),tx:this.num(m.tx),qty:this.num(m.qty),avg:this.baht(Math.round(m.revenue/m.tx)),isReal:i===6,barW:Math.round(m.revenue/maxMoRev*100)+'%'}));
