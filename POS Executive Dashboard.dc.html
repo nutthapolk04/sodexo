@@ -1124,7 +1124,9 @@ class Component extends DCLogic {
     V.langLabel=L.langLabel;
     V.onLang=()=>this.setState(s=>({lang:s.lang==='en'?'th':'en',openMenu:null}));
 
-    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s],daily:['Daily Report','Sales by day · Paolo Hospital Rangsit · Jul 1–14, 2026'],hourly:['Hourly Report','Transaction volume by hour · Jul 1–14, 2026'],weekly:['Weekly Report','Sales aggregated by week · Jul 2026'],monthly:['Monthly Report','Month-to-date summary · Jul 2026']};
+    const _rBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
+    const _rBranchName=st.branchFilter==='all'?'All Branches':(_rBranch?_rBranch.name:'Paolo Hospital Rangsit');
+    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s],daily:['Daily Report',_rBranchName+' · Jul 1–14, 2026'],hourly:['Hourly Report',_rBranchName+' · Jul 1–14, 2026'],weekly:['Weekly Report',_rBranchName+' · Jul 2026'],monthly:['Monthly Report',_rBranchName+' · Jan–Jul 2026']};
     V.pageTitle=titles[st.page][0]; V.pageSub=titles[st.page][1];
     V.liveTag=L.live;
     V.headerStyle={display:'flex',alignItems:'center',justifyContent:'space-between',gap:16,padding:'16px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-bg2)',flexShrink:0};
