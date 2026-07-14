@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <x-dc>
@@ -1010,13 +1011,19 @@ class Component extends DCLogic {
     return rows;
   }
 
-  _dlCSV(filename,rows){
-    const csv=rows.map(r=>r.map(v=>'"'+(''+v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
-    const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url; a.download=filename; document.body.appendChild(a); a.click();
-    document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  _dlXLSX(filename,rows,sheetName){
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    /* auto column width */
+    ws['!cols']=rows[0].map((_,ci)=>({wch:Math.max(...rows.map(r=>(''+r[ci]).length),10)+2}));
+    /* header style */
+    const range=XLSX.utils.decode_range(ws['!ref']);
+    for(let C=range.s.c;C<=range.e.c;C++){
+      const cell=XLSX.utils.encode_cell({r:0,c:C});
+      if(ws[cell]) ws[cell].s={font:{bold:true},fill:{fgColor:{rgb:'275267'}},font:{color:{rgb:'FFFFFF'},bold:true}};
+    }
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,sheetName||'Report');
+    XLSX.writeFile(wb,filename);
   }
   openMenuFn(n){ this.setState(s=>({openMenu:s.openMenu===n?null:n})); }
   toast(msg){ this.setState({toast:msg}); clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({toast:null}),2800); }
@@ -1070,23 +1077,23 @@ class Component extends DCLogic {
           const pay=this._REAL.payDaily[day]||{};
           rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);
         });
-        this._dlCSV('daily-report-jul2026.csv',rows);
-        this.toast('CSV downloaded — daily-report-jul2026.csv');
+        this._dlXLSX('daily-report-jul2026.xlsx',rows,'Daily');
+        this.toast('Excel downloaded — daily-report-jul2026.xlsx');
       } else if(pg==='hourly'){
         const rows=[['Hour','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         Object.entries(this._REAL.hourly).forEach(([h,v])=>rows.push([h+':00',v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
-        this._dlCSV('hourly-report-jul2026.csv',rows);
-        this.toast('CSV downloaded — hourly-report-jul2026.csv');
+        this._dlXLSX('hourly-report-jul2026.xlsx',rows,'Hourly');
+        this.toast('Excel downloaded — hourly-report-jul2026.xlsx');
       } else if(pg==='weekly'){
         const rows=[['Week','Period','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         Object.entries(this._REAL.weekly).forEach(([w,v])=>rows.push([w,v.label,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
-        this._dlCSV('weekly-report-jul2026.csv',rows);
-        this.toast('CSV downloaded — weekly-report-jul2026.csv');
+        this._dlXLSX('weekly-report-jul2026.xlsx',rows,'Weekly');
+        this.toast('Excel downloaded — weekly-report-jul2026.xlsx');
       } else if(pg==='monthly'){
         const rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         [{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:186373,tx:1800,qty:4679}].forEach(m=>rows.push([m.label,m.revenue,m.tx,m.qty,Math.round(m.revenue/m.tx)]));
-        this._dlCSV('monthly-report-2026.csv',rows);
-        this.toast('CSV downloaded — monthly-report-2026.csv');
+        this._dlXLSX('monthly-report-2026.xlsx',rows,'Monthly');
+        this.toast('Excel downloaded — monthly-report-2026.xlsx');
       } else {
         window.print();
       }
