@@ -348,27 +348,6 @@
 
       <sc-if value="{{ isBranch }}">
         <div style="animation:appFade .28s var(--app-ease);max-width:1440px;margin:0 auto">
-          <div style="position:relative;margin-bottom:16px;display:inline-block">
-            <button style="{{ filterCtl }}" onClick="{{ onOpenBrsel }}">
-              <span style="display:inline-flex;color:var(--app-ink3)">{{ I.store }}</span>
-              <span style="font-weight:600;color:var(--app-ink)">{{ brselLabel }}</span>
-              <span style="display:inline-flex;color:var(--app-ink3)">{{ I.chevron }}</span>
-            </button>
-            <sc-if value="{{ mBrsel }}">
-              <div style="{{ menuStyle }}">
-                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:4px;border:1px solid var(--app-border);border-radius:8px;background:var(--app-bg2)">
-                  <span style="display:inline-flex;flex-shrink:0">{{ I.search }}</span>
-                  <input value="{{ brselQuery }}" onInput="{{ onBrselSearch }}" placeholder="{{ L.searchSite }}" style="border:none;background:transparent;outline:none;font-size:13px;font-family:inherit;color:var(--app-ink);width:100%;padding:0" />
-                </div>
-                <sc-for list="{{ brselMenu }}" as="m" hint-placeholder-count="6">
-                  <button style="{{ m.style }}" onClick="{{ m.onClick }}"><span>{{ m.label }}</span><span style="font-size:11px;color:var(--app-ink3)">{{ m.right }}</span></button>
-                </sc-for>
-                <sc-if value="{{ brselEmpty }}">
-                  <div style="padding:12px;text-align:center;font-size:12.5px;color:var(--app-ink3)">{{ L.noResults }}</div>
-                </sc-if>
-              </div>
-            </sc-if>
-          </div>
 
           <div style="{{ cardStyle }}">
             <div style="display:flex;align-items:center;gap:16px">
@@ -1186,17 +1165,23 @@ class Component extends DCLogic {
     const mItem=(active)=>({display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,padding:'9px 11px',borderRadius:8,border:'none',cursor:'pointer',fontSize:13,fontFamily:'inherit',textAlign:'left',width:'100%',background:active?'var(--app-blue-lite)':'transparent',color:active?'var(--app-navy)':'var(--app-ink)',fontWeight:active?600:500});
 
     V.mBranch=st.openMenu==='branch'; V.mPeriod=st.openMenu==='period'; V.mChannel=st.openMenu==='channel'; V.mHeat=st.openMenu==='heat';
-    V.showBranchFilter=st.page!=='branch';
+    V.showBranchFilter=true;
     V.backdropOpen=!!st.openMenu;
     V.onOpenBranch=()=>this.openMenuFn('branch'); V.onOpenPeriod=()=>this.openMenuFn('period'); V.onOpenChannel=()=>this.openMenuFn('channel'); V.onOpenHeat=()=>this.openMenuFn('heat');
     V.onCloseMenus=()=>this.setState({openMenu:null});
 
-    V.fBranchLabel=st.branchFilter==='all'?L.allBranches:this.bget(st.branchFilter).name;
+    V.fBranchLabel=st.page==='branch'?this.bget(st.selectedBranch).name:(st.branchFilter==='all'?L.allBranches:this.bget(st.branchFilter).name);
     V.branchQuery=st.branchQuery;
     V.onBranchSearch=(e)=>this.setState({branchQuery:e.target.value});
     const bq=(st.branchQuery||'').trim().toLowerCase();
     const bItems=this._data.branches.filter(b=> !bq || b.name.toLowerCase().includes(bq) || this.trType(b.region,lang).toLowerCase().includes(bq));
-    V.branchMenu=(bq?[]:[{label:L.allBranches,right:this._data.branches.length+'',active:st.branchFilter==='all',style:mItem(st.branchFilter==='all'),onClick:()=>this.setState({branchFilter:'all',openMenu:null,branchQuery:''})}]).concat(bItems.map(b=>({label:b.name,right:this.trType(b.region,lang),active:st.branchFilter===b.id,style:mItem(st.branchFilter===b.id),onClick:()=>this.setState({branchFilter:b.id,openMenu:null,branchQuery:''})})));
+    const onBranchSelect=(id)=>{
+      const upd={branchFilter:id,openMenu:null,branchQuery:''};
+      if(st.page==='branch'&&id!=='all') upd.selectedBranch=id;
+      this.setState(upd);
+    };
+    const showAllOpt=st.page!=='branch';
+    V.branchMenu=(bq||!showAllOpt?[]:[{label:L.allBranches,right:this._data.branches.length+'',active:st.branchFilter==='all',style:mItem(st.branchFilter==='all'),onClick:()=>onBranchSelect('all')}]).concat(bItems.map(b=>({label:b.name,right:this.trType(b.region,lang),active:st.branchFilter===b.id,style:mItem(st.branchFilter===b.id),onClick:()=>onBranchSelect(b.id)})));
     V.branchEmpty=bItems.length===0;
     const perDefs=[['jul2026',L.pThisMonth,'July 2026'],['jun2026',L.pLastMonth,'June 2026'],['q3',L.pLast3,'May–Jul 2026'],['y2026',L.pYtd,'2026']];
     V.fPeriodLabel=this.trDate(perDefs.find(p=>p[0]===st.period)[2],lang);
