@@ -1014,7 +1014,9 @@ class Component extends DCLogic {
     const pad=n=>String(n).padStart(2,'0');
     const ts=pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
     const titles={daily:'Daily Sales Report',hourly:'Hourly Sales Report',weekly:'Weekly Sales Report',monthly:'Monthly Sales Report'};
-    return {title:titles[pg]||'Sales Report',branch:'Paolo Hospital Rangsit · Branch 664TH240000',generated:'Generated: '+ts};
+    const bf=this.state.branchFilter;
+    const branchLabel=bf==='all'?'All Branches':this.bget(bf).name;
+    return {title:titles[pg]||'Sales Report',branch:branchLabel,generated:'Generated: '+ts};
   }
   _dlXLSX(filename,rows,sheetName,meta){
     const m=meta||{};
