@@ -1393,7 +1393,7 @@ class Component extends DCLogic {
       V.rKpis=[kpiCard('Total Revenue',this.baht(mo.revenue),rBranchName+' · Jul 2026',c.navy),kpiCard('Transactions',this.num(mo.tx),'Jul 2026',c.teal),kpiCard('Items Sold',this.num(mo.qty),'Jul 2026',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(mo.revenue/mo.tx)),'per receipt',c.gold)];
       const dailyVals=Object.entries(this._REAL.daily).map(([k,v])=>({label:k.slice(0,2),value:scaleD(v.revenue)}));
       V.rChart=React.createElement('div',{key:'monthly-'+st.branchFilter},this.lineChart(dailyVals,c));
-      V.rMonthChart=React.createElement('div',{key:'monthtrend-'+st.branchFilter},this.lineChart(mockMonths.map(m=>({label:m.label.slice(0,3),value:m.revenue})),c));
+      /* V.rMonthChart set after mockMonths is declared below */
       const payTotals={};
       Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+Math.round(v*rScale);}));
       const paySum=Object.values(payTotals).reduce((a,b)=>a+b,0)||1;
@@ -1412,7 +1412,7 @@ class Component extends DCLogic {
         {label:'Jul 2026',revenue:mo.revenue,tx:mo.tx}
       ].map(m=>({...m,qty:Math.round((m.tx||0)*2.35)}));
       const maxMoRev=Math.max(...mockMonths.map(m=>m.revenue));
-      /* rMonthChart set above with key for forced re-render */
+      V.rMonthChart=React.createElement('div',{key:'monthtrend-'+st.branchFilter},this.lineChart(mockMonths.map(m=>({label:m.label.slice(0,3),value:m.revenue})),c));
       V.rMonthTable=mockMonths.map((m,i)=>({label:m.label,revenue:this.baht(m.revenue),tx:this.num(m.tx),qty:this.num(m.qty),avg:this.baht(Math.round(m.revenue/m.tx)),isReal:i===6,barW:Math.round(m.revenue/maxMoRev*100)+'%'}));
     }
 
