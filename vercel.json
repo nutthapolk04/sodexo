@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/POS Executive Dashboard.dc.html" }
+  ]
+}
