@@ -1152,6 +1152,11 @@ class Component extends DCLogic {
       const meta=this._reportMeta(pg);
       let rows=null;
       let extraSections=null;
+      /* branch scaling used by daily/hourly/weekly/monthly (Paolo-derived estimates); overview/branch use real per-branch data and never scale */
+      const PAOLO_W=0.95;
+      const eBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
+      const eScale=eBranch&&eBranch.id!=='paolo'?eBranch.w/PAOLO_W:1.0;
+      const eScaleD=(v)=>Math.round(v*eScale);
       if(pg==='daily'){
         rows=[['Date','Revenue (THB)','Transactions','Items','Avg Ticket (THB)','PromptPay','Room Service','Mae Manee','Coupon']];
         Object.entries(this._REAL.daily).forEach(([day,v])=>{const pay=this._REAL.payDaily[day]||{}; rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);});
@@ -1164,7 +1169,21 @@ class Component extends DCLogic {
       } else if(pg==='monthly'){
         rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         [{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:186373,tx:1800,qty:4679}].forEach(m=>rows.push([m.label,m.revenue,m.tx,m.qty,Math.round(m.revenue/m.tx)]));
+        const payTotals={};
+        Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+eScaleD(v);}));
+        const paySum=Object.values(payTotals).reduce((a2,b2)=>a2+b2,0)||1;
+        extraSections=[{title:'Payment Mix — '+(eBranch?eBranch.name:'Paolo Hospital Rangsit'),name:'Payment Mix',rows:[
+          ['Channel','Amount (THB)','% of Total'],
+          ...Object.entries(payTotals).sort((a2,b2)=>b2[1]-a2[1]).map(([name,val])=>[name,val,Math.round(val/paySum*100)])
+        ]}];
       } else if(pg==='overview'){
+        const bs=this.scope(), a=this.agg();
+        const avgCur=a.tx?a.sales/a.tx:0, avgPrev=(a.prev&&a.prevTx)?a.prev/a.prevTx:null;
+        const items=Math.round(a.tx*2.35), itemsPrev=a.prevTx?Math.round(a.prevTx*2.35):null;
+        const pctChg=(cur,prev)=>(prev!=null&&prev!==0)?Math.round((cur-prev)/prev*1000)/10:'';
+        const csAvg=bs.reduce((s,b)=>s+b.csat.score,0)/bs.length;
+        const csResp=bs.reduce((s,b)=>s+b.csat.resp,0);
+        const csPos=Math.round(bs.reduce((s,b)=>s+(b.csat.dist[0]+b.csat.dist[1]),0)/bs.length*100);
         rows=[['Branch','Region','Sales (THB)','Transactions','Avg Ticket (THB)','% of Total Sales','Change vs Previous %','CSAT Score (/5)','CSAT Responses','CSAT % Positive']];
         const rankBs=this._data.branches.map(b=>({b,p:this._period(b)})).sort((x,y)=>y.p.sales-x.p.sales);
         const totS=rankBs.reduce((a2,x)=>a2+x.p.sales,0)||1;
@@ -1173,6 +1192,24 @@ class Component extends DCLogic {
           const csPosPct=Math.round((b.csat.dist[0]+b.csat.dist[1])*100);
           rows.push([b.name,this.trType(b.region,lang),p.sales,p.tx,Math.round(p.sales/p.tx),Math.round(p.sales/totS*100),d,b.csat.score.toFixed(1),b.csat.resp,csPosPct]);
         });
+        const chAmt=bs.reduce((acc,b)=>{ const s=this._period(b).sales; b.payments.forEach(pay=>{acc[pay.id]=(acc[pay.id]||0)+s*pay.frac;}); return acc; },{});
+        const chTot=Object.values(chAmt).reduce((a2,b2)=>a2+b2,0)||1;
+        extraSections=[
+          {title:'Executive Summary — '+(st.branchFilter==='all'?'All Branches':this.bget(st.branchFilter).name),name:'Executive Summary',rows:[
+            ['Metric','Value','Previous Period','Change %'],
+            ['Total Sales (THB)',a.sales,a.prev??'',pctChg(a.sales,a.prev)],
+            ['Transactions',a.tx,a.prevTx??'',pctChg(a.tx,a.prevTx)],
+            ['Avg Ticket (THB)',Math.round(avgCur),avgPrev?Math.round(avgPrev):'',pctChg(avgCur,avgPrev)],
+            ['Items Sold',items,itemsPrev??'',pctChg(items,itemsPrev)],
+            ['Avg CSAT Score (/5)',csAvg.toFixed(1),'',''],
+            ['Total CSAT Responses',csResp,'',''],
+            ['CSAT % Positive',csPos,'','']
+          ]},
+          {title:'Payment Mix — '+(st.branchFilter==='all'?'All Branches':this.bget(st.branchFilter).name),name:'Payment Mix',rows:[
+            ['Channel','Amount (THB)','% of Total'],
+            ...CH.map(x=>[chLabel(x),Math.round(chAmt[x.id]||0),Math.round((chAmt[x.id]||0)/chTot*100)])
+          ]}
+        ];
       } else if(pg==='branch'){
         const b=this.bget(st.selectedBranch), p=this._period(b);
         rows=[['Cashier','Transactions','Sales (THB)','Avg Ticket (THB)']];
@@ -1181,7 +1218,27 @@ class Component extends DCLogic {
           rows.push([cs.name,tx,sales,Math.round(sales/tx)]);
         });
         const cs2=b.csat, csd=cs2.score-cs2.prev, csPos=Math.round((cs2.dist[0]+cs2.dist[1])*100);
+        const avgCurB=p.sales/p.tx, avgPrevB=(p.prev&&p.prevTx)?p.prev/p.prevTx:null;
+        const pctChgB=(cur,prev)=>(prev!=null&&prev!==0)?Math.round((cur-prev)/prev*1000)/10:'';
+        const locTotB=b.locs.reduce((a2,l)=>a2+l.frac,0)||1;
+        const chAmtB={};
+        b.payments.forEach(pay=>{chAmtB[pay.id]=(chAmtB[pay.id]||0)+p.sales*pay.frac;});
+        const chTotB=Object.values(chAmtB).reduce((a2,b2)=>a2+b2,0)||1;
         extraSections=[
+          {title:'Branch Summary — '+b.name,name:'Branch Summary',rows:[
+            ['Metric','Value','Previous Period','Change %'],
+            ['Total Sales (THB)',p.sales,p.prev??'',pctChgB(p.sales,p.prev)],
+            ['Transactions',p.tx,p.prevTx??'',pctChgB(p.tx,p.prevTx)],
+            ['Avg Ticket (THB)',Math.round(avgCurB),avgPrevB?Math.round(avgPrevB):'',pctChgB(avgCurB,avgPrevB)]
+          ]},
+          {title:'Sales by Location — '+b.name,name:'Sales by Location',rows:[
+            ['Location','Amount (THB)','% of Total'],
+            ...b.locs.map(l=>[this.trLoc(l.name,lang),Math.round(l.frac/locTotB*p.sales),Math.round(l.frac/locTotB*100)])
+          ]},
+          {title:'Payment Mix — '+b.name,name:'Payment Mix',rows:[
+            ['Channel','Amount (THB)','% of Total'],
+            ...CH.map(x=>[chLabel(x),Math.round(chAmtB[x.id]||0),Math.round((chAmtB[x.id]||0)/chTotB*100)])
+          ]},
           {title:'Customer Satisfaction — '+b.name,name:'CSAT Summary',rows:[
             ['Metric','Value'],
             ['Average Score (out of 5)',cs2.score.toFixed(1)],
@@ -1199,11 +1256,6 @@ class Component extends DCLogic {
           ]}
         ];
       }
-      /* apply branch scaling to export rows too */
-      const PAOLO_W=0.95;
-      const eBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
-      const eScale=eBranch&&eBranch.id!=='paolo'?eBranch.w/PAOLO_W:1.0;
-      const eScaleD=(v)=>Math.round(v*eScale);
       if(rows && eScale!==1.0 && pg!=='overview' && pg!=='branch'){
         const h=rows[0]; /* keep header */
         rows=[h,...rows.slice(1).map(r=>r.map((v,i)=>i===0?v:typeof v==='number'?eScaleD(v):v))];
