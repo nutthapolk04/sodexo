@@ -1048,17 +1048,35 @@ class Component extends DCLogic {
     });
     XLSX.writeFile(wb,filename);
   }
-  _dlPDF(filename,rows,meta,extraSections){
+  async _ensureThaiFont(doc){
+    if(!this._thaiFontB64){
+      try{
+        const res=await fetch('https://fonts.gstatic.com/s/ibmplexsansthai/v11/m8JPje1VVIzcq1HzJq2AEdo2Tj_qvLq8Dg.ttf');
+        const buf=await res.arrayBuffer();
+        const bytes=new Uint8Array(buf);
+        let binary='';
+        for(let i=0;i<bytes.length;i++) binary+=String.fromCharCode(bytes[i]);
+        this._thaiFontB64=btoa(binary);
+      }catch(e){ console.warn('Thai font load failed, PDF will fall back to default font',e); return false; }
+    }
+    doc.addFileToVFS('IBMPlexSansThai-Regular.ttf',this._thaiFontB64);
+    doc.addFont('IBMPlexSansThai-Regular.ttf','THSans','normal');
+    doc.addFont('IBMPlexSansThai-Regular.ttf','THSans','bold');
+    return true;
+  }
+  async _dlPDF(filename,rows,meta,extraSections){
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const hasThai=await this._ensureThaiFont(doc);
+    const fontName=hasThai?'THSans':undefined;
     const m=meta||{};
     /* header */
     doc.setFillColor(39,82,103);
     doc.rect(0,0,297,28,'F');
     doc.setTextColor(255,255,255);
-    doc.setFontSize(16); doc.setFont(undefined,'bold');
+    doc.setFontSize(16); doc.setFont(fontName,'bold');
     doc.text(m.title||'Sales Report',14,11);
-    doc.setFontSize(9); doc.setFont(undefined,'normal');
+    doc.setFontSize(9); doc.setFont(fontName,'normal');
     doc.text((m.branch||''),14,18);
     doc.text((m.generated||''),14,24);
     /* table */
@@ -1066,7 +1084,7 @@ class Component extends DCLogic {
       head:[rows[0]],
       body:rows.slice(1),
       startY:32,
-      styles:{fontSize:9,cellPadding:3},
+      styles:{font:fontName,fontSize:9,cellPadding:3},
       headStyles:{fillColor:[39,82,103],textColor:255,fontStyle:'bold'},
       alternateRowStyles:{fillColor:[242,241,234]},
       margin:{left:14,right:14}
@@ -1074,13 +1092,13 @@ class Component extends DCLogic {
     (extraSections||[]).forEach(sec=>{
       doc.addPage();
       doc.setTextColor(39,82,103);
-      doc.setFontSize(13); doc.setFont(undefined,'bold');
+      doc.setFontSize(13); doc.setFont(fontName,'bold');
       doc.text(sec.title,14,16);
       doc.autoTable({
         head:[sec.rows[0]],
         body:sec.rows.slice(1),
         startY:22,
-        styles:{fontSize:9,cellPadding:3},
+        styles:{font:fontName,fontSize:9,cellPadding:3},
         headStyles:{fillColor:[39,82,103],textColor:255,fontStyle:'bold'},
         alternateRowStyles:{fillColor:[242,241,234]},
         margin:{left:14,right:14}
@@ -1260,7 +1278,7 @@ class Component extends DCLogic {
         const h=rows[0]; /* keep header */
         rows=[h,...rows.slice(1).map(r=>r.map((v,i)=>i===0?v:typeof v==='number'?eScaleD(v):v))];
       }
-      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta,extraSections); this.toast('PDF downloaded — '+meta.title); }
+      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta,extraSections).then(()=>this.toast('PDF downloaded — '+meta.title)); }
       else if(fmt==='xlsx' && rows){ this._dlXLSX(meta.title.replace(/\s+/g,'-').toLowerCase()+'.xlsx',rows,pg.charAt(0).toUpperCase()+pg.slice(1),meta,extraSections); this.toast('Excel downloaded — '+meta.title); }
       else { window.print(); }
     };
