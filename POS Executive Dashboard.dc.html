@@ -1013,12 +1013,12 @@ class Component extends DCLogic {
     const now=new Date();
     const pad=n=>String(n).padStart(2,'0');
     const ts=pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
-    const titles={daily:'Daily Sales Report',hourly:'Hourly Sales Report',weekly:'Weekly Sales Report',monthly:'Monthly Sales Report'};
-    const bf=this.state.branchFilter;
+    const titles={overview:'Executive Overview Report',branch:'Branch Detail Report',daily:'Daily Sales Report',hourly:'Hourly Sales Report',weekly:'Weekly Sales Report',monthly:'Monthly Sales Report'};
+    const bf=pg==='branch'?this.state.selectedBranch:this.state.branchFilter;
     const branchLabel=bf==='all'?'All Branches':this.bget(bf).name;
     return {title:titles[pg]||'Sales Report',branch:branchLabel,generated:'Generated: '+ts};
   }
-  _dlXLSX(filename,rows,sheetName,meta){
+  _dlXLSX(filename,rows,sheetName,meta,extraSections){
     const m=meta||{};
     const allRows=m.title?[[m.title],[m.branch||''],[m.generated||''],[],[...rows[0]],...rows.slice(1)]:rows;
     const ws=XLSX.utils.aoa_to_sheet(allRows);
@@ -1041,9 +1041,14 @@ class Component extends DCLogic {
     }
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,sheetName||'Report');
+    (extraSections||[]).forEach(sec=>{
+      const ws2=XLSX.utils.aoa_to_sheet(sec.rows);
+      ws2['!cols']=sec.rows[0].map((_,ci)=>({wch:Math.max(...sec.rows.map(r=>(''+(r[ci]==null?'':r[ci])).length),12)+2}));
+      XLSX.utils.book_append_sheet(wb,ws2,sec.name);
+    });
     XLSX.writeFile(wb,filename);
   }
-  _dlPDF(filename,rows,meta){
+  _dlPDF(filename,rows,meta,extraSections){
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const m=meta||{};
@@ -1065,6 +1070,21 @@ class Component extends DCLogic {
       headStyles:{fillColor:[39,82,103],textColor:255,fontStyle:'bold'},
       alternateRowStyles:{fillColor:[242,241,234]},
       margin:{left:14,right:14}
+    });
+    (extraSections||[]).forEach(sec=>{
+      doc.addPage();
+      doc.setTextColor(39,82,103);
+      doc.setFontSize(13); doc.setFont(undefined,'bold');
+      doc.text(sec.title,14,16);
+      doc.autoTable({
+        head:[sec.rows[0]],
+        body:sec.rows.slice(1),
+        startY:22,
+        styles:{fontSize:9,cellPadding:3},
+        headStyles:{fillColor:[39,82,103],textColor:255,fontStyle:'bold'},
+        alternateRowStyles:{fillColor:[242,241,234]},
+        margin:{left:14,right:14}
+      });
     });
     doc.save(filename);
   }
@@ -1131,6 +1151,7 @@ class Component extends DCLogic {
       const pg=st.page;
       const meta=this._reportMeta(pg);
       let rows=null;
+      let extraSections=null;
       if(pg==='daily'){
         rows=[['Date','Revenue (THB)','Transactions','Items','Avg Ticket (THB)','PromptPay','Room Service','Mae Manee','Coupon']];
         Object.entries(this._REAL.daily).forEach(([day,v])=>{const pay=this._REAL.payDaily[day]||{}; rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);});
@@ -1143,18 +1164,52 @@ class Component extends DCLogic {
       } else if(pg==='monthly'){
         rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
         [{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:186373,tx:1800,qty:4679}].forEach(m=>rows.push([m.label,m.revenue,m.tx,m.qty,Math.round(m.revenue/m.tx)]));
+      } else if(pg==='overview'){
+        rows=[['Branch','Region','Sales (THB)','Transactions','Avg Ticket (THB)','% of Total Sales','Change vs Previous %','CSAT Score (/5)','CSAT Responses','CSAT % Positive']];
+        const rankBs=this._data.branches.map(b=>({b,p:this._period(b)})).sort((x,y)=>y.p.sales-x.p.sales);
+        const totS=rankBs.reduce((a2,x)=>a2+x.p.sales,0)||1;
+        rankBs.forEach(({b,p})=>{
+          const d=(p.prev&&p.prev!==0)?Math.round((p.sales-p.prev)/p.prev*1000)/10:'';
+          const csPosPct=Math.round((b.csat.dist[0]+b.csat.dist[1])*100);
+          rows.push([b.name,this.trType(b.region,lang),p.sales,p.tx,Math.round(p.sales/p.tx),Math.round(p.sales/totS*100),d,b.csat.score.toFixed(1),b.csat.resp,csPosPct]);
+        });
+      } else if(pg==='branch'){
+        const b=this.bget(st.selectedBranch), p=this._period(b);
+        rows=[['Cashier','Transactions','Sales (THB)','Avg Ticket (THB)']];
+        b.cashiers.forEach(cs=>{
+          const sales=Math.round(cs.frac*p.sales), tx=Math.round(cs.frac*p.tx);
+          rows.push([cs.name,tx,sales,Math.round(sales/tx)]);
+        });
+        const cs2=b.csat, csd=cs2.score-cs2.prev, csPos=Math.round((cs2.dist[0]+cs2.dist[1])*100);
+        extraSections=[
+          {title:'Customer Satisfaction — '+b.name,name:'CSAT Summary',rows:[
+            ['Metric','Value'],
+            ['Average Score (out of 5)',cs2.score.toFixed(1)],
+            ['Change vs Previous Period',(csd>=0?'+':'')+csd.toFixed(1)],
+            ['Total Responses',cs2.resp],
+            ['Positive Ratings (4–5★) %',csPos+'%']
+          ]},
+          {title:'Rating Distribution — '+b.name,name:'CSAT Distribution',rows:[
+            ['Rating','% of Responses'],
+            ['5★',Math.round(cs2.dist[0]*100)+'%'],
+            ['4★',Math.round(cs2.dist[1]*100)+'%'],
+            ['3★',Math.round(cs2.dist[2]*100)+'%'],
+            ['2★',Math.round(cs2.dist[3]*100)+'%'],
+            ['1★',Math.round(cs2.dist[4]*100)+'%']
+          ]}
+        ];
       }
       /* apply branch scaling to export rows too */
       const PAOLO_W=0.95;
       const eBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
       const eScale=eBranch&&eBranch.id!=='paolo'?eBranch.w/PAOLO_W:1.0;
       const eScaleD=(v)=>Math.round(v*eScale);
-      if(rows && eScale!==1.0){
+      if(rows && eScale!==1.0 && pg!=='overview' && pg!=='branch'){
         const h=rows[0]; /* keep header */
         rows=[h,...rows.slice(1).map(r=>r.map((v,i)=>i===0?v:typeof v==='number'?eScaleD(v):v))];
       }
-      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta); this.toast('PDF downloaded — '+meta.title); }
-      else if(fmt==='xlsx' && rows){ this._dlXLSX(meta.title.replace(/\s+/g,'-').toLowerCase()+'.xlsx',rows,pg.charAt(0).toUpperCase()+pg.slice(1),meta); this.toast('Excel downloaded — '+meta.title); }
+      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta,extraSections); this.toast('PDF downloaded — '+meta.title); }
+      else if(fmt==='xlsx' && rows){ this._dlXLSX(meta.title.replace(/\s+/g,'-').toLowerCase()+'.xlsx',rows,pg.charAt(0).toUpperCase()+pg.slice(1),meta,extraSections); this.toast('Excel downloaded — '+meta.title); }
       else { window.print(); }
     };
     V.onNotify=()=>this.toast(L.notifyToast);
