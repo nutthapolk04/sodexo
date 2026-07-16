@@ -479,14 +479,14 @@
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">Daily Revenue Trend</h3>
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.dailyTrendTitle }}</h3>
               <span style="font-size:11.5px;color:var(--app-ink3)">{{ rNote }}</span>
             </div>
             {{ rChart }}
           </div>
           <div style="{{ cardFlush }};margin-top:16px">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 2fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
-              <span>Date</span><span style="text-align:right">Revenue</span><span style="text-align:right">Txns</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span><span>Payment Mix</span>
+              <span>{{ L.rptDate }}</span><span style="text-align:right">{{ L.rptRevenue }}</span><span style="text-align:right">{{ L.rptTxns }}</span><span style="text-align:right">{{ L.rptItems }}</span><span style="text-align:right">{{ L.rptAvgTicket }}</span><span>{{ L.paymentMix }}</span>
             </div>
             <sc-for list="{{ rTable }}" as="r" hint-placeholder-count="14">
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 2fr;gap:10px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--app-border-sub)">
@@ -516,14 +516,14 @@
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">Revenue by Hour</h3>
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.hourlyTrendTitle }}</h3>
               <span style="font-size:11.5px;color:var(--app-ink3)">{{ rNote }}</span>
             </div>
             {{ rChart }}
           </div>
           <div style="{{ cardFlush }};margin-top:16px">
             <div style="display:grid;grid-template-columns:.8fr 1fr 1fr 1fr 1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
-              <span>Hour</span><span style="text-align:right">Revenue</span><span style="text-align:right">Transactions</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span>
+              <span>{{ L.rptHour }}</span><span style="text-align:right">{{ L.rptRevenue }}</span><span style="text-align:right">{{ L.rptTransactions }}</span><span style="text-align:right">{{ L.rptItems }}</span><span style="text-align:right">{{ L.rptAvgTicket }}</span>
             </div>
             <sc-for list="{{ rTable }}" as="r" hint-placeholder-count="13">
               <div style="display:grid;grid-template-columns:.8fr 1fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--app-border-sub)">
@@ -552,14 +552,14 @@
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">Weekly Revenue</h3>
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0">{{ L.weeklyTrendTitle }}</h3>
               <span style="font-size:11.5px;color:var(--app-ink3)">{{ rNote }}</span>
             </div>
             {{ rChart }}
           </div>
           <div style="{{ cardFlush }};margin-top:16px">
             <div style="display:grid;grid-template-columns:.8fr 1.2fr 1fr 1fr 1fr 1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
-              <span>Week</span><span>Period</span><span style="text-align:right">Revenue</span><span style="text-align:right">Transactions</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span>
+              <span>{{ L.rptWeek }}</span><span>{{ L.rptPeriod }}</span><span style="text-align:right">{{ L.rptRevenue }}</span><span style="text-align:right">{{ L.rptTransactions }}</span><span style="text-align:right">{{ L.rptItems }}</span><span style="text-align:right">{{ L.rptAvgTicket }}</span>
             </div>
             <sc-for list="{{ rTable }}" as="r" hint-placeholder-count="3">
               <div style="display:grid;grid-template-columns:.8fr 1.2fr 1fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--app-border-sub)">
@@ -588,14 +588,14 @@
             </sc-for>
           </div>
           <div style="{{ cardStyle }};margin-top:16px">
-            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 4px">Monthly Revenue Trend · Jan–Jul 2026</h3>
-            <p style="font-size:12.5px;color:var(--app-ink3);margin:0 0 14px">Jul 2026 = real data from POS · Jan–Jun = estimated</p>
+            <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 4px">{{ L.monthlyTrendTitle }} · {{ L.dateRangeMonthly }}</h3>
+            <p style="font-size:12.5px;color:var(--app-ink3);margin:0 0 14px">{{ L.monthlyEstimateNote }}</p>
             {{ rMonthChart }}
           </div>
           <div style="{{ gridAStyle }}">
             <div style="{{ cardFlush }}">
               <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:10px;padding:12px 20px;background:var(--app-bg2);font-size:11px;font-weight:600;color:var(--app-ink3);text-transform:uppercase;letter-spacing:.03em">
-                <span>Month</span><span style="text-align:right">Revenue</span><span style="text-align:right">Transactions</span><span style="text-align:right">Items</span><span style="text-align:right">Avg Ticket</span>
+                <span>{{ L.rptMonth }}</span><span style="text-align:right">{{ L.rptRevenue }}</span><span style="text-align:right">{{ L.rptTransactions }}</span><span style="text-align:right">{{ L.rptItems }}</span><span style="text-align:right">{{ L.rptAvgTicket }}</span>
               </div>
               <sc-for list="{{ rMonthTable }}" as="r" hint-placeholder-count="7">
                 <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--app-border-sub)">
@@ -608,7 +608,7 @@
               </sc-for>
             </div>
             <div style="{{ cardStyle }}">
-              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">Payment Mix · Jul 2026</h3>
+              <h3 style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--app-ink);margin:0 0 14px">{{ L.paymentMix }} · {{ L.dateRangeWeekly }}</h3>
               <div style="display:flex;flex-direction:column;gap:14px">
                 <sc-for list="{{ rPayRows }}" as="p" hint-placeholder-count="4">
                   <div>
@@ -716,6 +716,9 @@ class Component extends DCLogic {
       ov_t:'Executive overview', ov_s:'Consolidated sales across all sites',
       rc_t:'Reconciliation', rc_s:'POS vs accounting — catch anomalies fast',
       br_t:'Branch detail', br_s:'Site-level performance & transactions',
+      daily_t:'Daily Report', hourly_t:'Hourly Report', weekly_t:'Weekly Report', monthly_t:'Monthly Report',
+      dateRangeDaily:'Jul 1–14, 2026', dateRangeWeekly:'Jul 2026', dateRangeMonthly:'Jan–Jul 2026',
+      navOverview:'Overview', navBranch:'Branch detail', navDaily:'Daily', navHourly:'Hourly', navWeekly:'Weekly', navMonthly:'Monthly',
       kpiSales:'Total sales', kpiTx:'Transactions', kpiAvg:'Avg ticket size', kpiAvgShort:'Avg ticket', kpiItems:'Items sold', vs:'vs',
       salesTrend:'Sales trend', day:'Day', month:'Month', year:'Year',
       trendDaily:'Daily sales · July 2026 (MTD, days 1–14)', trendMonthly:'Monthly sales · trailing 12 months', trendYearly:'Annual sales · 2024–2026',
@@ -731,7 +734,14 @@ class Component extends DCLogic {
       transactions:'transactions', txns:'txns', avg:'avg', noTx:'No transactions match the selected payment channels.', csat:'Customer satisfaction', highest:'Highest', lowest:'Lowest',
       reconDetail:'Reconciliation detail', flaggedTx:'Flagged transactions', assignReview:'Assign for review', markResolved:'Mark resolved',
       pThisMonth:'This month', pLastMonth:'Last month', pLast3:'Last 3 months', pYtd:'Year to date',
-      exportToast:'Generating PDF report — ', notifyToast:'3 sites need reconciliation review', drillToast:'Item routed to finance team for review'
+      exportToast:'Generating PDF report — ', notifyToast:'3 sites need reconciliation review', drillToast:'Item routed to finance team for review',
+      kpiTotalRevenue:'Total Revenue', kpiPeakHourSales:'Peak Hour (Sales)', kpiPeakHourTxns:'Peak Hour (Txns)', kpiBestWeek:'Best Week', kpiAvgWeek:'Avg/Week',
+      subDays14:'14 days', subAllItems:'all items', subPerReceipt:'per receipt', subAllHours:'all hours', subTxnsSuffix:' txns', subWeeks3:'3 weeks', subPerWeek:'per week',
+      dateRangeDailyShort:'Jul 1–14',
+      rNoteEstimated:'Estimated · based on relative branch performance', rNoteReal:'Real data · Paolo Hospital Rangsit',
+      dailyTrendTitle:'Daily Revenue Trend', hourlyTrendTitle:'Revenue by Hour', weeklyTrendTitle:'Weekly Revenue', monthlyTrendTitle:'Monthly Revenue Trend',
+      monthlyEstimateNote:'Jul 2026 = real data from POS · Jan–Jun = estimated',
+      rptDate:'Date', rptRevenue:'Revenue', rptTxns:'Txns', rptTransactions:'Transactions', rptItems:'Items', rptAvgTicket:'Avg Ticket', rptHour:'Hour', rptWeek:'Week', rptPeriod:'Period', rptMonth:'Month'
     };
     const th={
       posAnalytics:'ระบบวิเคราะห์ POS', role:'กรรมการผู้จัดการ', darkMode:'โหมดมืด', lightMode:'โหมดสว่าง', langLabel:'English',
@@ -741,6 +751,9 @@ class Component extends DCLogic {
       ov_t:'ภาพรวมผู้บริหาร', ov_s:'สรุปยอดขายรวมทุกสาขา',
       rc_t:'กระทบยอด', rc_s:'เทียบ POS กับบัญชี — จับความผิดปกติได้ทันที',
       br_t:'รายละเอียดสาขา', br_s:'ผลการดำเนินงานและรายการขายรายสาขา',
+      daily_t:'รายงานยอดขายรายวัน', hourly_t:'รายงานยอดขายรายชั่วโมง', weekly_t:'รายงานยอดขายรายสัปดาห์', monthly_t:'รายงานยอดขายรายเดือน',
+      dateRangeDaily:'1–14 ก.ค. 2026', dateRangeWeekly:'ก.ค. 2026', dateRangeMonthly:'ม.ค.–ก.ค. 2026',
+      navOverview:'ภาพรวม', navBranch:'รายละเอียดสาขา', navDaily:'รายวัน', navHourly:'รายชั่วโมง', navWeekly:'รายสัปดาห์', navMonthly:'รายเดือน',
       kpiSales:'ยอดขายรวม', kpiTx:'จำนวนรายการ', kpiAvg:'ยอดเฉลี่ย/บิล', kpiAvgShort:'เฉลี่ย/บิล', kpiItems:'จำนวนชิ้นที่ขาย', vs:'เทียบ',
       salesTrend:'แนวโน้มยอดขาย', day:'วัน', month:'เดือน', year:'ปี',
       trendDaily:'ยอดขายรายวัน · ก.ค. 2026 (ต้นเดือน วันที่ 1–14)', trendMonthly:'ยอดขายรายเดือน · ย้อนหลัง 12 เดือน', trendYearly:'ยอดขายรายปี · 2024–2026',
@@ -756,7 +769,14 @@ class Component extends DCLogic {
       transactions:'รายการ', txns:'รายการ', avg:'เฉลี่ย', noTx:'ไม่มีรายการที่ตรงกับช่องทางชำระเงินที่เลือก', csat:'ความพึงพอใจของลูกค้า', highest:'สูงสุด', lowest:'ต่ำสุด',
       reconDetail:'รายละเอียดการกระทบยอด', flaggedTx:'รายการที่ผิดปกติ', assignReview:'มอบหมายให้ตรวจสอบ', markResolved:'ทำเครื่องหมายว่าแก้ไขแล้ว',
       pThisMonth:'เดือนนี้', pLastMonth:'เดือนก่อน', pLast3:'3 เดือนล่าสุด', pYtd:'ตั้งแต่ต้นปี',
-      exportToast:'กำลังสร้างรายงาน PDF — ', notifyToast:'มี 3 สาขาที่ต้องตรวจสอบการกระทบยอด', drillToast:'ส่งรายการให้ทีมการเงินตรวจสอบแล้ว'
+      exportToast:'กำลังสร้างรายงาน PDF — ', notifyToast:'มี 3 สาขาที่ต้องตรวจสอบการกระทบยอด', drillToast:'ส่งรายการให้ทีมการเงินตรวจสอบแล้ว',
+      kpiTotalRevenue:'รายได้รวม', kpiPeakHourSales:'ชั่วโมงพีค (ยอดขาย)', kpiPeakHourTxns:'ชั่วโมงพีค (รายการ)', kpiBestWeek:'สัปดาห์ที่ดีที่สุด', kpiAvgWeek:'เฉลี่ย/สัปดาห์',
+      subDays14:'14 วัน', subAllItems:'ทุกรายการ', subPerReceipt:'ต่อบิล', subAllHours:'ทุกชั่วโมง', subTxnsSuffix:' รายการ', subWeeks3:'3 สัปดาห์', subPerWeek:'ต่อสัปดาห์',
+      dateRangeDailyShort:'1–14 ก.ค.',
+      rNoteEstimated:'ประมาณการ · อ้างอิงผลงานเทียบสาขาอื่น', rNoteReal:'ข้อมูลจริง · Paolo Hospital Rangsit',
+      dailyTrendTitle:'แนวโน้มรายได้รายวัน', hourlyTrendTitle:'รายได้ตามชั่วโมง', weeklyTrendTitle:'รายได้รายสัปดาห์', monthlyTrendTitle:'แนวโน้มรายได้รายเดือน',
+      monthlyEstimateNote:'ก.ค. 2026 = ข้อมูลจริงจาก POS · ม.ค.–มิ.ย. = ประมาณการ',
+      rptDate:'วันที่', rptRevenue:'รายได้', rptTxns:'รายการ', rptTransactions:'จำนวนรายการ', rptItems:'จำนวนชิ้น', rptAvgTicket:'เฉลี่ย/บิล', rptHour:'ชั่วโมง', rptWeek:'สัปดาห์', rptPeriod:'ช่วงเวลา', rptMonth:'เดือน'
     };
     return l==='th'?th:en;
   }
@@ -1172,7 +1192,7 @@ class Component extends DCLogic {
     V.brandRow={display:'flex',alignItems:'center',gap:11,padding:sidebarWide?'0 18px 14px':'0 0 14px',justifyContent:sidebarWide?'flex-start':'center',borderBottom:'1px solid var(--app-border)',marginBottom:6};
     V.logoStyle={width:34,height:34,borderRadius:9,background:c.gold,color:'#1C1D1D',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-display)',fontWeight:800,fontSize:18,flexShrink:0};
 
-    const navDefs=[['overview','Overview','layout-dashboard'],['branch','Branch detail','store'],['daily','Daily','calendar'],['hourly','Hourly','clock'],['weekly','Weekly','trending-up'],['monthly','Monthly','bank']];
+    const navDefs=[['overview',L.navOverview,'layout-dashboard'],['branch',L.navBranch,'store'],['daily',L.navDaily,'calendar'],['hourly',L.navHourly,'clock'],['weekly',L.navWeekly,'trending-up'],['monthly',L.navMonthly,'bank']];
     V.nav=navDefs.map(([id,label,ic])=>{ const active=st.page===id; return {id,label,icon:this.icon(ic,19,active?c.navy:c.ink2),iconWrap:{display:'inline-flex',flexShrink:0},onClick:()=>this.setState({page:id,openMenu:null}),style:{display:'flex',alignItems:'center',gap:12,width:'100%',padding:sidebarWide?'10px 12px':'11px 0',border:'none',borderRadius:10,cursor:'pointer',fontSize:13.5,fontFamily:'inherit',justifyContent:sidebarWide?'flex-start':'center',fontWeight:active?600:500,background:active?'var(--app-blue-lite)':'transparent',color:active?'var(--app-navy)':'var(--app-ink2)',transition:'background .12s'}}; });
 
     V.themeBtnStyle={display:'flex',alignItems:'center',gap:11,width:'100%',padding:sidebarWide?'10px 12px':'11px 0',border:'1px solid var(--app-border)',borderRadius:10,cursor:'pointer',fontSize:13,fontFamily:'inherit',justifyContent:sidebarWide?'flex-start':'center',background:'var(--app-card)',color:'var(--app-ink2)',fontWeight:500};
@@ -1185,8 +1205,8 @@ class Component extends DCLogic {
     V.onLang=()=>this.setState(s=>({lang:s.lang==='en'?'th':'en',openMenu:null}));
 
     const _rBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
-    const _rBranchName=st.branchFilter==='all'?'All Branches':(_rBranch?_rBranch.name:'Paolo Hospital Rangsit');
-    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s],daily:['Daily Report',_rBranchName+' · Jul 1–14, 2026'],hourly:['Hourly Report',_rBranchName+' · Jul 1–14, 2026'],weekly:['Weekly Report',_rBranchName+' · Jul 2026'],monthly:['Monthly Report',_rBranchName+' · Jan–Jul 2026']};
+    const _rBranchName=st.branchFilter==='all'?L.allBranches:(_rBranch?_rBranch.name:'Paolo Hospital Rangsit');
+    const titles={overview:[L.ov_t,L.ov_s],reconciliation:[L.rc_t,L.rc_s],branch:[L.br_t,L.br_s],daily:[L.daily_t,_rBranchName+' · '+L.dateRangeDaily],hourly:[L.hourly_t,_rBranchName+' · '+L.dateRangeDaily],weekly:[L.weekly_t,_rBranchName+' · '+L.dateRangeWeekly],monthly:[L.monthly_t,_rBranchName+' · '+L.dateRangeMonthly]};
     V.pageTitle=titles[st.page][0]; V.pageSub=titles[st.page][1];
     V.liveTag=L.live;
     V.headerStyle={display:'flex',alignItems:'center',justifyContent:'space-between',gap:16,padding:'16px 28px',borderBottom:'1px solid var(--app-border)',background:'var(--app-bg2)',flexShrink:0};
@@ -1465,9 +1485,9 @@ class Component extends DCLogic {
     const PAOLO_W=0.95;
     const rBranch=st.branchFilter==='all'?null:this.bget(st.branchFilter);
     const rScale=rBranch&&rBranch.id!=='paolo'?rBranch.w/PAOLO_W:1.0;
-    const rBranchName=st.branchFilter==='all'?'All Branches':(rBranch?rBranch.name:'Paolo Hospital Rangsit');
+    const rBranchName=st.branchFilter==='all'?L.allBranches:(rBranch?rBranch.name:'Paolo Hospital Rangsit');
     const rIsEstimated=rBranch&&rBranch.id!=='paolo';
-    const rNote=rIsEstimated?'Estimated · based on relative branch performance':'Real data · Paolo Hospital Rangsit';
+    const rNote=rIsEstimated?L.rNoteEstimated:L.rNoteReal;
     const scaleD=(v)=>Math.round(v*rScale);
     const scalePay=(pay)=>{ const o={}; Object.entries(pay).forEach(([k,v])=>o[k]=Math.round(v*rScale)); return o; };
 
@@ -1487,7 +1507,7 @@ class Component extends DCLogic {
       const totRev=days.reduce((a,[,v])=>a+v.revenue,0);
       const totTx=days.reduce((a,[,v])=>a+v.tx,0);
       const totQty=days.reduce((a,[,v])=>a+v.qty,0);
-      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName+' · Jul 1–14',c.navy),kpiCard('Transactions',this.num(totTx),'14 days',c.teal),kpiCard('Items Sold',this.num(totQty),'all items',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(totRev/totTx)),'per receipt',c.gold)];
+      V.rKpis=[kpiCard(L.kpiTotalRevenue,this.baht(totRev),rBranchName+' · '+L.dateRangeDailyShort,c.navy),kpiCard(L.kpiTx,this.num(totTx),L.subDays14,c.teal),kpiCard(L.kpiItems,this.num(totQty),L.subAllItems,c.blue),kpiCard(L.kpiAvgShort,this.baht(Math.round(totRev/totTx)),L.subPerReceipt,c.gold)];
       V.rNote=rNote;
       V.rChart=React.createElement('div',{key:'daily-'+st.branchFilter},this.lineChart(days.map(([k,v])=>({label:k.slice(0,2),value:v.revenue})),c));
       V.rTable=days.map(([day,v],i)=>{
@@ -1520,7 +1540,7 @@ class Component extends DCLogic {
       const totTx=hours.reduce((a,x)=>a+x.tx,0);
       const peakRev=hours.reduce((a,x)=>x.revenue>a.revenue?x:a);
       const peakTx=hours.reduce((a,x)=>x.tx>a.tx?x:a);
-      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName,c.navy),kpiCard('Transactions',this.num(totTx),'all hours',c.teal),kpiCard('Peak Hour (Sales)',peakRev.h+':00',this.bahtC(peakRev.revenue),c.gold),kpiCard('Peak Hour (Txns)',peakTx.h+':00',this.num(peakTx.tx)+' txns',c.blue)];
+      V.rKpis=[kpiCard(L.kpiTotalRevenue,this.baht(totRev),rBranchName,c.navy),kpiCard(L.kpiTx,this.num(totTx),L.subAllHours,c.teal),kpiCard(L.kpiPeakHourSales,peakRev.h+':00',this.bahtC(peakRev.revenue),c.gold),kpiCard(L.kpiPeakHourTxns,peakTx.h+':00',this.num(peakTx.tx)+L.subTxnsSuffix,c.blue)];
       V.rNote=rNote;
       const _hourlyChart=this.lineChart(hours.map(x=>({label:x.h+':00',value:x.revenue})),c);
       V.rChart=React.createElement('div',{key:'hourly-'+st.branchFilter},_hourlyChart);
@@ -1543,11 +1563,11 @@ class Component extends DCLogic {
       const totTx=weeks.reduce((a,[,v])=>a+v.tx,0);
       const maxRev=Math.max(...weeks.map(([,v])=>v.revenue));
       const bestW=weeks.reduce((a,x)=>x[1].revenue>a[1].revenue?x:a);
-      V.rKpis=[kpiCard('Total Revenue',this.baht(totRev),rBranchName+' · Jul 2026',c.navy),kpiCard('Transactions',this.num(totTx),'3 weeks',c.teal),kpiCard('Best Week',bestW[0]+' · '+bestW[1].label,this.bahtC(bestW[1].revenue),c.gold),kpiCard('Avg/Week',this.baht(Math.round(totRev/weeks.length)),'per week',c.blue)];
+      V.rKpis=[kpiCard(L.kpiTotalRevenue,this.baht(totRev),rBranchName+' · '+L.dateRangeWeekly,c.navy),kpiCard(L.kpiTx,this.num(totTx),L.subWeeks3,c.teal),kpiCard(L.kpiBestWeek,bestW[0]+' · '+this.trDate(bestW[1].label,lang),this.bahtC(bestW[1].revenue),c.gold),kpiCard(L.kpiAvgWeek,this.baht(Math.round(totRev/weeks.length)),L.subPerWeek,c.blue)];
       V.rNote=rNote;
       const _weeklyChart=this.lineChart(weeks.map(([k,v])=>({label:v.label,value:v.revenue})),c);
       V.rChart=React.createElement('div',{key:'weekly-'+st.branchFilter},_weeklyChart);
-      V.rTable=weeks.map(([week,v])=>({week,label:v.label,revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),barW:Math.round(v.revenue/maxRev*100)+'%'}));
+      V.rTable=weeks.map(([week,v])=>({week,label:this.trDate(v.label,lang),revenue:this.baht(v.revenue),tx:this.num(v.tx),qty:this.num(v.qty),avg:this.baht(Math.round(v.revenue/v.tx)),barW:Math.round(v.revenue/maxRev*100)+'%'}));
     }
 
     if(V.isMonthly){
@@ -1560,7 +1580,7 @@ class Component extends DCLogic {
         :{revenue:167000,tx:1620,qty:4200};
       const delta=(mo.revenue-prevMo.revenue)/prevMo.revenue*100;
       const up=delta>=0;
-      V.rKpis=[kpiCard('Total Revenue',this.baht(mo.revenue),rBranchName+' · Jul 2026',c.navy),kpiCard('Transactions',this.num(mo.tx),'Jul 2026',c.teal),kpiCard('Items Sold',this.num(mo.qty),'Jul 2026',c.blue),kpiCard('Avg Ticket',this.baht(Math.round(mo.revenue/mo.tx)),'per receipt',c.gold)];
+      V.rKpis=[kpiCard(L.kpiTotalRevenue,this.baht(mo.revenue),rBranchName+' · '+L.dateRangeWeekly,c.navy),kpiCard(L.kpiTx,this.num(mo.tx),L.dateRangeWeekly,c.teal),kpiCard(L.kpiItems,this.num(mo.qty),L.dateRangeWeekly,c.blue),kpiCard(L.kpiAvgShort,this.baht(Math.round(mo.revenue/mo.tx)),L.subPerReceipt,c.gold)];
       const dailyVals=Object.entries(this._REAL.daily).map(([k,v])=>({label:k.slice(0,2),value:scaleD(v.revenue)}));
       V.rChart=React.createElement('div',{key:'monthly-'+st.branchFilter},this.lineChart(dailyVals,c));
       /* V.rMonthChart set after mockMonths is declared below */
@@ -1568,7 +1588,7 @@ class Component extends DCLogic {
       Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+Math.round(v*rScale);}));
       const paySum=Object.values(payTotals).reduce((a,b)=>a+b,0)||1;
       V.rPayRows=Object.entries(payTotals).sort((a,b)=>b[1]-a[1]).map(([name,val])=>({name,amount:this.baht(val),pct:Math.round(val/paySum*100)+'%',barStyle:{height:'100%',borderRadius:999,width:Math.round(val/paySum*100)+'%',background:PAY_COLORS[name]||c.navy,display:'block'}}));
-      V.rDelta={text:(up?'+':'')+delta.toFixed(1)+'%',label:'vs Jun 2026',style:{fontSize:14,fontWeight:700,color:up?c.teal:c.down}};
+      V.rDelta={text:(up?'+':'')+delta.toFixed(1)+'%',label:L.vs+' '+this.trDate('Jun 2026',lang),style:{fontSize:14,fontWeight:700,color:up?c.teal:c.down}};
       V.rNote=rNote;
       const moLabels=['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul 2025','Aug 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026','Jul 2026'];
       const baseMo=rBranch&&rBranch.id!=='paolo'?rBranch:null;
@@ -1583,7 +1603,7 @@ class Component extends DCLogic {
       ].map(m=>({...m,qty:Math.round((m.tx||0)*2.35)}));
       const maxMoRev=Math.max(...mockMonths.map(m=>m.revenue));
       V.rMonthChart=React.createElement('div',{key:'monthtrend-'+st.branchFilter},this.lineChart(mockMonths.map(m=>({label:m.label.slice(0,3),value:m.revenue})),c));
-      V.rMonthTable=mockMonths.map((m,i)=>({label:m.label,revenue:this.baht(m.revenue),tx:this.num(m.tx),qty:this.num(m.qty),avg:this.baht(Math.round(m.revenue/m.tx)),isReal:i===6,barW:Math.round(m.revenue/maxMoRev*100)+'%'}));
+      V.rMonthTable=mockMonths.map((m,i)=>({label:this.trDate(m.label,lang),revenue:this.baht(m.revenue),tx:this.num(m.tx),qty:this.num(m.qty),avg:this.baht(Math.round(m.revenue/m.tx)),isReal:i===6,barW:Math.round(m.revenue/maxMoRev*100)+'%'}));
     }
 
     if(V.isBranch){
