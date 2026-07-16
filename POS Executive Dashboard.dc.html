@@ -760,6 +760,47 @@ class Component extends DCLogic {
     };
     return l==='th'?th:en;
   }
+  _exportStrings(l){
+    const en={
+      allBranches:'All Branches',
+      reportTitles:{overview:'Executive Overview Report',branch:'Branch Detail Report',daily:'Daily Sales Report',hourly:'Hourly Sales Report',weekly:'Weekly Sales Report',monthly:'Monthly Sales Report',fallback:'Sales Report'},
+      pageShort:{overview:'Overview',branch:'Branch',daily:'Daily',hourly:'Hourly',weekly:'Weekly',monthly:'Monthly'},
+      generated:'Generated: ', pdfDownloaded:'PDF downloaded — ', xlsxDownloaded:'Excel downloaded — ',
+      colDate:'Date',colRevenue:'Revenue (THB)',colTx:'Transactions',colItems:'Items',colAvgTicket:'Avg Ticket (THB)',
+      colPromptPay:'PromptPay',colRoomService:'Room Service',colMaeManee:'Mae Manee',colCoupon:'Coupon',
+      colHour:'Hour',colWeek:'Week',colPeriod:'Period',colMonth:'Month',
+      colBranch:'Branch',colRegion:'Region',colSales:'Sales (THB)',colPctTotalSales:'% of Total Sales',colChangePrev:'Change vs Previous %',
+      colCsatScore:'CSAT Score (/5)',colCsatResp:'CSAT Responses',colCsatPos:'CSAT % Positive',
+      colChannel:'Channel',colAmount:'Amount (THB)',colPctTotal:'% of Total',
+      colMetric:'Metric',colValue:'Value',colPrevPeriod:'Previous Period',colChangePct:'Change %',
+      colCashier:'Cashier',colLocation:'Location',colRating:'Rating',colPctResponses:'% of Responses',
+      titleExecSummary:'Executive Summary',titlePaymentMix:'Payment Mix',titleBranchSummary:'Branch Summary',
+      titleSalesByLocation:'Sales by Location',titleCsat:'Customer Satisfaction',titleRatingDist:'Rating Distribution',
+      rowTotalSales:'Total Sales (THB)',rowTransactions:'Transactions',rowAvgTicket:'Avg Ticket (THB)',rowItemsSold:'Items Sold',
+      rowAvgCsat:'Avg CSAT Score (/5)',rowTotalCsatResp:'Total CSAT Responses',rowCsatPosPct:'CSAT % Positive',
+      rowAvgScore:'Average Score (out of 5)',rowChangePrevPeriod:'Change vs Previous Period',rowTotalResp:'Total Responses',rowPosRatings:'Positive Ratings (4–5★) %'
+    };
+    const th={
+      allBranches:'ทุกสาขา',
+      reportTitles:{overview:'รายงานภาพรวมผู้บริหาร',branch:'รายงานรายละเอียดสาขา',daily:'รายงานยอดขายรายวัน',hourly:'รายงานยอดขายรายชั่วโมง',weekly:'รายงานยอดขายรายสัปดาห์',monthly:'รายงานยอดขายรายเดือน',fallback:'รายงานยอดขาย'},
+      pageShort:{overview:'ภาพรวม',branch:'สาขา',daily:'รายวัน',hourly:'รายชั่วโมง',weekly:'รายสัปดาห์',monthly:'รายเดือน'},
+      generated:'สร้างเมื่อ: ', pdfDownloaded:'ดาวน์โหลด PDF แล้ว — ', xlsxDownloaded:'ดาวน์โหลด Excel แล้ว — ',
+      colDate:'วันที่',colRevenue:'รายได้ (บาท)',colTx:'จำนวนรายการ',colItems:'จำนวนชิ้น',colAvgTicket:'ยอดเฉลี่ย/บิล (บาท)',
+      colPromptPay:'พร้อมเพย์',colRoomService:'รูมเซอร์วิส',colMaeManee:'แม่มณี',colCoupon:'คูปอง',
+      colHour:'ชั่วโมง',colWeek:'สัปดาห์',colPeriod:'ช่วงเวลา',colMonth:'เดือน',
+      colBranch:'สาขา',colRegion:'ประเภท',colSales:'ยอดขาย (บาท)',colPctTotalSales:'% ของยอดขายรวม',colChangePrev:'% เปลี่ยนแปลงจากช่วงก่อน',
+      colCsatScore:'คะแนนความพึงพอใจ (/5)',colCsatResp:'จำนวนผู้ตอบแบบสำรวจ',colCsatPos:'% พึงพอใจ',
+      colChannel:'ช่องทาง',colAmount:'ยอดเงิน (บาท)',colPctTotal:'% ของยอดรวม',
+      colMetric:'ตัวชี้วัด',colValue:'ค่า',colPrevPeriod:'ช่วงก่อนหน้า',colChangePct:'% เปลี่ยนแปลง',
+      colCashier:'แคชเชียร์',colLocation:'จุดขาย',colRating:'คะแนน',colPctResponses:'% ของผู้ตอบแบบสำรวจ',
+      titleExecSummary:'สรุปภาพรวม',titlePaymentMix:'สัดส่วนช่องทางชำระเงิน',titleBranchSummary:'สรุปข้อมูลสาขา',
+      titleSalesByLocation:'ยอดขายตามจุดขาย',titleCsat:'ความพึงพอใจของลูกค้า',titleRatingDist:'การกระจายคะแนน',
+      rowTotalSales:'ยอดขายรวม (บาท)',rowTransactions:'จำนวนรายการ',rowAvgTicket:'ยอดเฉลี่ย/บิล (บาท)',rowItemsSold:'จำนวนชิ้นที่ขาย',
+      rowAvgCsat:'คะแนนพึงพอใจเฉลี่ย (/5)',rowTotalCsatResp:'จำนวนผู้ตอบแบบสำรวจทั้งหมด',rowCsatPosPct:'% พึงพอใจ',
+      rowAvgScore:'คะแนนเฉลี่ย (เต็ม 5)',rowChangePrevPeriod:'เปลี่ยนแปลงจากช่วงก่อนหน้า',rowTotalResp:'จำนวนผู้ตอบแบบสำรวจ',rowPosRatings:'% คะแนนเชิงบวก (4–5 ดาว)'
+    };
+    return l==='th'?th:en;
+  }
   trType(r,l){ if(l!=='th')return r; return ({Factory:'โรงงาน',Canteen:'โรงอาหาร',Hospital:'โรงพยาบาล'})[r]||r; }
   trLoc(n,l){ if(l!=='th')return n; return ({'Dine-in':'ทานที่ร้าน','Takeaway':'สั่งกลับบ้าน','Delivery':'เดลิเวอรี','Kiosk':'คีออสก์','Bar':'บาร์'})[n]||n; }
   trDate(s,l){ if(l!=='th'||s==null)return s; const map=[['January','ม.ค.'],['February','ก.พ.'],['March','มี.ค.'],['April','เม.ย.'],['June','มิ.ย.'],['July','ก.ค.'],['August','ส.ค.'],['September','ก.ย.'],['October','ต.ค.'],['November','พ.ย.'],['December','ธ.ค.'],['May','พ.ค.'],['Jan','ม.ค.'],['Feb','ก.พ.'],['Mar','มี.ค.'],['Apr','เม.ย.'],['Jun','มิ.ย.'],['Jul','ก.ค.'],['Aug','ส.ค.'],['Sep','ก.ย.'],['Oct','ต.ค.'],['Nov','พ.ย.'],['Dec','ธ.ค.']]; let o=''+s; map.forEach(([k,v])=>{o=o.split(k).join(v);}); o=o.split('YTD').join('ตั้งแต่ต้นปี'); return o; }
@@ -1009,14 +1050,14 @@ class Component extends DCLogic {
     return rows;
   }
 
-  _reportMeta(pg){
+  _reportMeta(pg,lang){
     const now=new Date();
     const pad=n=>String(n).padStart(2,'0');
     const ts=pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
-    const titles={overview:'Executive Overview Report',branch:'Branch Detail Report',daily:'Daily Sales Report',hourly:'Hourly Sales Report',weekly:'Weekly Sales Report',monthly:'Monthly Sales Report'};
+    const X=this._exportStrings(lang);
     const bf=pg==='branch'?this.state.selectedBranch:this.state.branchFilter;
-    const branchLabel=bf==='all'?'All Branches':this.bget(bf).name;
-    return {title:titles[pg]||'Sales Report',branch:branchLabel,generated:'Generated: '+ts};
+    const branchLabel=bf==='all'?X.allBranches:this.bget(bf).name;
+    return {title:X.reportTitles[pg]||X.reportTitles.fallback,branch:branchLabel,generated:X.generated+ts};
   }
   _dlXLSX(filename,rows,sheetName,meta,extraSections){
     const m=meta||{};
@@ -1167,7 +1208,8 @@ class Component extends DCLogic {
     V.onExportFormat=(fmt)=>{
       this.setState({exportMenu:false});
       const pg=st.page;
-      const meta=this._reportMeta(pg);
+      const meta=this._reportMeta(pg,lang);
+      const X=this._exportStrings(lang);
       let rows=null;
       let extraSections=null;
       /* branch scaling used by daily/hourly/weekly/monthly (Paolo-derived estimates); overview/branch use real per-branch data and never scale */
@@ -1176,22 +1218,22 @@ class Component extends DCLogic {
       const eScale=eBranch&&eBranch.id!=='paolo'?eBranch.w/PAOLO_W:1.0;
       const eScaleD=(v)=>Math.round(v*eScale);
       if(pg==='daily'){
-        rows=[['Date','Revenue (THB)','Transactions','Items','Avg Ticket (THB)','PromptPay','Room Service','Mae Manee','Coupon']];
+        rows=[[X.colDate,X.colRevenue,X.colTx,X.colItems,X.colAvgTicket,X.colPromptPay,X.colRoomService,X.colMaeManee,X.colCoupon]];
         Object.entries(this._REAL.daily).forEach(([day,v])=>{const pay=this._REAL.payDaily[day]||{}; rows.push([day,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx),pay['พร้อมเพย์']||0,pay['Room Service']||0,pay['แม่มณี']||0,pay['คูปอง']||0]);});
       } else if(pg==='hourly'){
-        rows=[['Hour','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        rows=[[X.colHour,X.colRevenue,X.colTx,X.colItems,X.colAvgTicket]];
         Object.entries(this._REAL.hourly).forEach(([h,v])=>rows.push([h+':00',v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
       } else if(pg==='weekly'){
-        rows=[['Week','Period','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        rows=[[X.colWeek,X.colPeriod,X.colRevenue,X.colTx,X.colItems,X.colAvgTicket]];
         Object.entries(this._REAL.weekly).forEach(([w,v])=>rows.push([w,v.label,v.revenue,v.tx,v.qty,Math.round(v.revenue/v.tx)]));
       } else if(pg==='monthly'){
-        rows=[['Month','Revenue (THB)','Transactions','Items','Avg Ticket (THB)']];
+        rows=[[X.colMonth,X.colRevenue,X.colTx,X.colItems,X.colAvgTicket]];
         [{label:'Jan 2026',revenue:142000,tx:1380,qty:3580},{label:'Feb 2026',revenue:155000,tx:1490,qty:3870},{label:'Mar 2026',revenue:161000,tx:1540,qty:4010},{label:'Apr 2026',revenue:149000,tx:1430,qty:3720},{label:'May 2026',revenue:158000,tx:1520,qty:3950},{label:'Jun 2026',revenue:167000,tx:1620,qty:4200},{label:'Jul 2026',revenue:186373,tx:1800,qty:4679}].forEach(m=>rows.push([m.label,m.revenue,m.tx,m.qty,Math.round(m.revenue/m.tx)]));
         const payTotals={};
         Object.values(this._REAL.payDaily).forEach(d=>Object.entries(d).forEach(([k,v])=>{payTotals[k]=(payTotals[k]||0)+eScaleD(v);}));
         const paySum=Object.values(payTotals).reduce((a2,b2)=>a2+b2,0)||1;
-        extraSections=[{title:'Payment Mix — '+(eBranch?eBranch.name:'Paolo Hospital Rangsit'),name:'Payment Mix',rows:[
-          ['Channel','Amount (THB)','% of Total'],
+        extraSections=[{title:X.titlePaymentMix+' — '+(eBranch?eBranch.name:'Paolo Hospital Rangsit'),name:X.titlePaymentMix,rows:[
+          [X.colChannel,X.colAmount,X.colPctTotal],
           ...Object.entries(payTotals).sort((a2,b2)=>b2[1]-a2[1]).map(([name,val])=>[name,val,Math.round(val/paySum*100)])
         ]}];
       } else if(pg==='overview'){
@@ -1202,7 +1244,7 @@ class Component extends DCLogic {
         const csAvg=bs.reduce((s,b)=>s+b.csat.score,0)/bs.length;
         const csResp=bs.reduce((s,b)=>s+b.csat.resp,0);
         const csPos=Math.round(bs.reduce((s,b)=>s+(b.csat.dist[0]+b.csat.dist[1]),0)/bs.length*100);
-        rows=[['Branch','Region','Sales (THB)','Transactions','Avg Ticket (THB)','% of Total Sales','Change vs Previous %','CSAT Score (/5)','CSAT Responses','CSAT % Positive']];
+        rows=[[X.colBranch,X.colRegion,X.colSales,X.colTx,X.colAvgTicket,X.colPctTotalSales,X.colChangePrev,X.colCsatScore,X.colCsatResp,X.colCsatPos]];
         const rankBs=this._data.branches.map(b=>({b,p:this._period(b)})).sort((x,y)=>y.p.sales-x.p.sales);
         const totS=rankBs.reduce((a2,x)=>a2+x.p.sales,0)||1;
         rankBs.forEach(({b,p})=>{
@@ -1212,25 +1254,26 @@ class Component extends DCLogic {
         });
         const chAmt=bs.reduce((acc,b)=>{ const s=this._period(b).sales; b.payments.forEach(pay=>{acc[pay.id]=(acc[pay.id]||0)+s*pay.frac;}); return acc; },{});
         const chTot=Object.values(chAmt).reduce((a2,b2)=>a2+b2,0)||1;
+        const scopeName=st.branchFilter==='all'?X.allBranches:this.bget(st.branchFilter).name;
         extraSections=[
-          {title:'Executive Summary — '+(st.branchFilter==='all'?'All Branches':this.bget(st.branchFilter).name),name:'Executive Summary',rows:[
-            ['Metric','Value','Previous Period','Change %'],
-            ['Total Sales (THB)',a.sales,a.prev??'',pctChg(a.sales,a.prev)],
-            ['Transactions',a.tx,a.prevTx??'',pctChg(a.tx,a.prevTx)],
-            ['Avg Ticket (THB)',Math.round(avgCur),avgPrev?Math.round(avgPrev):'',pctChg(avgCur,avgPrev)],
-            ['Items Sold',items,itemsPrev??'',pctChg(items,itemsPrev)],
-            ['Avg CSAT Score (/5)',csAvg.toFixed(1),'',''],
-            ['Total CSAT Responses',csResp,'',''],
-            ['CSAT % Positive',csPos,'','']
+          {title:X.titleExecSummary+' — '+scopeName,name:X.titleExecSummary,rows:[
+            [X.colMetric,X.colValue,X.colPrevPeriod,X.colChangePct],
+            [X.rowTotalSales,a.sales,a.prev??'',pctChg(a.sales,a.prev)],
+            [X.rowTransactions,a.tx,a.prevTx??'',pctChg(a.tx,a.prevTx)],
+            [X.rowAvgTicket,Math.round(avgCur),avgPrev?Math.round(avgPrev):'',pctChg(avgCur,avgPrev)],
+            [X.rowItemsSold,items,itemsPrev??'',pctChg(items,itemsPrev)],
+            [X.rowAvgCsat,csAvg.toFixed(1),'',''],
+            [X.rowTotalCsatResp,csResp,'',''],
+            [X.rowCsatPosPct,csPos,'','']
           ]},
-          {title:'Payment Mix — '+(st.branchFilter==='all'?'All Branches':this.bget(st.branchFilter).name),name:'Payment Mix',rows:[
-            ['Channel','Amount (THB)','% of Total'],
+          {title:X.titlePaymentMix+' — '+scopeName,name:X.titlePaymentMix,rows:[
+            [X.colChannel,X.colAmount,X.colPctTotal],
             ...CH.map(x=>[chLabel(x),Math.round(chAmt[x.id]||0),Math.round((chAmt[x.id]||0)/chTot*100)])
           ]}
         ];
       } else if(pg==='branch'){
         const b=this.bget(st.selectedBranch), p=this._period(b);
-        rows=[['Cashier','Transactions','Sales (THB)','Avg Ticket (THB)']];
+        rows=[[X.colCashier,X.colTx,X.colSales,X.colAvgTicket]];
         b.cashiers.forEach(cs=>{
           const sales=Math.round(cs.frac*p.sales), tx=Math.round(cs.frac*p.tx);
           rows.push([cs.name,tx,sales,Math.round(sales/tx)]);
@@ -1243,29 +1286,29 @@ class Component extends DCLogic {
         b.payments.forEach(pay=>{chAmtB[pay.id]=(chAmtB[pay.id]||0)+p.sales*pay.frac;});
         const chTotB=Object.values(chAmtB).reduce((a2,b2)=>a2+b2,0)||1;
         extraSections=[
-          {title:'Branch Summary — '+b.name,name:'Branch Summary',rows:[
-            ['Metric','Value','Previous Period','Change %'],
-            ['Total Sales (THB)',p.sales,p.prev??'',pctChgB(p.sales,p.prev)],
-            ['Transactions',p.tx,p.prevTx??'',pctChgB(p.tx,p.prevTx)],
-            ['Avg Ticket (THB)',Math.round(avgCurB),avgPrevB?Math.round(avgPrevB):'',pctChgB(avgCurB,avgPrevB)]
+          {title:X.titleBranchSummary+' — '+b.name,name:X.titleBranchSummary,rows:[
+            [X.colMetric,X.colValue,X.colPrevPeriod,X.colChangePct],
+            [X.rowTotalSales,p.sales,p.prev??'',pctChgB(p.sales,p.prev)],
+            [X.rowTransactions,p.tx,p.prevTx??'',pctChgB(p.tx,p.prevTx)],
+            [X.rowAvgTicket,Math.round(avgCurB),avgPrevB?Math.round(avgPrevB):'',pctChgB(avgCurB,avgPrevB)]
           ]},
-          {title:'Sales by Location — '+b.name,name:'Sales by Location',rows:[
-            ['Location','Amount (THB)','% of Total'],
+          {title:X.titleSalesByLocation+' — '+b.name,name:X.titleSalesByLocation,rows:[
+            [X.colLocation,X.colAmount,X.colPctTotal],
             ...b.locs.map(l=>[this.trLoc(l.name,lang),Math.round(l.frac/locTotB*p.sales),Math.round(l.frac/locTotB*100)])
           ]},
-          {title:'Payment Mix — '+b.name,name:'Payment Mix',rows:[
-            ['Channel','Amount (THB)','% of Total'],
+          {title:X.titlePaymentMix+' — '+b.name,name:X.titlePaymentMix,rows:[
+            [X.colChannel,X.colAmount,X.colPctTotal],
             ...CH.map(x=>[chLabel(x),Math.round(chAmtB[x.id]||0),Math.round((chAmtB[x.id]||0)/chTotB*100)])
           ]},
-          {title:'Customer Satisfaction — '+b.name,name:'CSAT Summary',rows:[
-            ['Metric','Value'],
-            ['Average Score (out of 5)',cs2.score.toFixed(1)],
-            ['Change vs Previous Period',(csd>=0?'+':'')+csd.toFixed(1)],
-            ['Total Responses',cs2.resp],
-            ['Positive Ratings (4–5★) %',csPos+'%']
+          {title:X.titleCsat+' — '+b.name,name:X.titleCsat,rows:[
+            [X.colMetric,X.colValue],
+            [X.rowAvgScore,cs2.score.toFixed(1)],
+            [X.rowChangePrevPeriod,(csd>=0?'+':'')+csd.toFixed(1)],
+            [X.rowTotalResp,cs2.resp],
+            [X.rowPosRatings,csPos+'%']
           ]},
-          {title:'Rating Distribution — '+b.name,name:'CSAT Distribution',rows:[
-            ['Rating','% of Responses'],
+          {title:X.titleRatingDist+' — '+b.name,name:X.titleRatingDist,rows:[
+            [X.colRating,X.colPctResponses],
             ['5★',Math.round(cs2.dist[0]*100)+'%'],
             ['4★',Math.round(cs2.dist[1]*100)+'%'],
             ['3★',Math.round(cs2.dist[2]*100)+'%'],
@@ -1278,8 +1321,8 @@ class Component extends DCLogic {
         const h=rows[0]; /* keep header */
         rows=[h,...rows.slice(1).map(r=>r.map((v,i)=>i===0?v:typeof v==='number'?eScaleD(v):v))];
       }
-      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta,extraSections).then(()=>this.toast('PDF downloaded — '+meta.title)); }
-      else if(fmt==='xlsx' && rows){ this._dlXLSX(meta.title.replace(/\s+/g,'-').toLowerCase()+'.xlsx',rows,pg.charAt(0).toUpperCase()+pg.slice(1),meta,extraSections); this.toast('Excel downloaded — '+meta.title); }
+      if(fmt==='pdf' && rows){ this._dlPDF(meta.title.replace(/\s+/g,'-').toLowerCase()+'.pdf',rows,meta,extraSections).then(()=>this.toast(X.pdfDownloaded+meta.title)); }
+      else if(fmt==='xlsx' && rows){ this._dlXLSX(meta.title.replace(/\s+/g,'-').toLowerCase()+'.xlsx',rows,X.pageShort[pg],meta,extraSections); this.toast(X.xlsxDownloaded+meta.title); }
       else { window.print(); }
     };
     V.onNotify=()=>this.toast(L.notifyToast);
